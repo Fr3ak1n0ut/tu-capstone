@@ -117,7 +117,7 @@ public abstract class Menu extends Window
 		getScreen().refresh();
 	}
 
-	public abstract void interact();
+	public abstract void interact(Menu menu);
 
 	public void drawText(String txt, int column, int row)
 	{

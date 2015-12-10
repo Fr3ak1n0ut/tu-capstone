@@ -26,7 +26,6 @@ public class KeyListener
 		}
 		Kind keyKind = null;
 		keyKind = key.getKind();
-		System.out.println(keyKind);
 		return keyKind;
 	}
 }

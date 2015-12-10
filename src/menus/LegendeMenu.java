@@ -12,10 +12,10 @@ import com.googlecode.lanterna.terminal.Terminal.Color;
 
 import core.KeyListener;
 
-public class HelpMenu extends Menu
+public class LegendeMenu extends Menu
 {
 
-	public HelpMenu(int resolutionX, int resolutionY, Screen screen)
+	public LegendeMenu(int resolutionX, int resolutionY, Screen screen)
 	{
 		super(resolutionX, resolutionY, screen);
 		listener = new KeyListener(screen);
@@ -44,7 +44,7 @@ public class HelpMenu extends Menu
 	}
 
 	@Override
-	public void interact()
+	public void interact(Menu menu)
 	{
 		drawMenu();
 		while (true)
@@ -53,8 +53,7 @@ public class HelpMenu extends Menu
 			if (keyKind == Key.Kind.Enter)
 			{
 				getScreen().clear();
-				StartMenu menu = new StartMenu(getResolutionX(), getResolutionY(), getScreen());
-				menu.interact();
+				menu.interact(this);
 				return;
 			}
 		}

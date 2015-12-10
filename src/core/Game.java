@@ -6,6 +6,8 @@ package core;
 
 import com.googlecode.lanterna.TerminalFacade;
 import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.terminal.Terminal;
+
 import menus.StartMenu;
 import symbols.Player;
 
@@ -21,8 +23,10 @@ public class Game
 		music = new Audio("music.wav");
 //		music.start();
 		Screen screen = TerminalFacade.createScreen();
+//		Terminal terminal = TerminalFacade.createSwingTerminal(200, 100);
+//		Screen screen = TerminalFacade.createScreen(terminal);
 		StartMenu start = new StartMenu(200, 60, screen);
 		screen.startScreen();
-		start.interact();
+		start.interact(null);
 	}
 }

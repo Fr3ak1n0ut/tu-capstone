@@ -15,4 +15,5 @@ public class Entry extends Symbol {
     {
         super(x, y, value, color, symbol);
     }
+    
 }

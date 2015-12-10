@@ -19,7 +19,7 @@ public class StartMenu extends Menu
 	}
 
 	@Override
-	public void interact()
+	public void interact(Menu menu)
 	{
 		String[] interactables = { "Neues Spiel starten", "Spiel laden", "Legende", "Optionen",
 				"Spiel beenden" };
@@ -27,20 +27,20 @@ public class StartMenu extends Menu
 		switch (interactionResult)
 		{
 		case 5:
-			Core core = new Core(getScreen(),getResolutionX(), getResolutionY());
-			core.start("level.properties");
+			Core core = new Core(getScreen(),getResolutionX(), getResolutionY(),"level_big_dense.properties");
+			core.start();
 			return;
 		case 7:
-			LoadMenu loadMenu = new LoadMenu(getResolutionY(), getResolutionY(), getScreen());
-			loadMenu.interact();
+			LoadMenu loadMenu = new LoadMenu(getResolutionX(), getResolutionY(), getScreen());
+			loadMenu.interact(this);
 			return;
 		case 9:
-			HelpMenu legende = new HelpMenu(getResolutionX(), getResolutionY(), getScreen());
-			legende.interact();
+			LegendeMenu legende = new LegendeMenu(getResolutionX(), getResolutionY(), getScreen());
+			legende.interact(this);
 			return;
 		case 11:
 			OptionsMenu options = new OptionsMenu(getResolutionX(), getResolutionY(), getScreen());
-			options.interact();
+			options.interact(this);
 			return;
 		case 13:
 			boolean save = selectAnswer(30, 13, "Wirklich beenden?");
@@ -50,8 +50,8 @@ public class StartMenu extends Menu
 				System.exit(0);
 			} else
 			{
-				StartMenu start = new StartMenu(getResolutionX(), getResolutionY(), getScreen());
-				start.interact();
+				StartMenu startMenu = new StartMenu(getResolutionX(), getResolutionY(), getScreen());
+				startMenu.interact(null);
 			}
 			break;
 		}

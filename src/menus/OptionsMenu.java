@@ -7,15 +7,14 @@ import core.KeyListener;
 
 public class OptionsMenu extends Menu
 {
-	KeyListener listener;
 	public OptionsMenu(int resX, int resY, Screen screen)
 	{
 		super(resX, resY, screen);
-		this.listener = new KeyListener(screen);
+		listener = new KeyListener(screen);
 	}
 
 	@Override
-	public void interact()
+	public void interact(Menu menu)
 	{
 		String[] interactables = { "Music", "Zurück" };
 		int interactionResult = interaction(interactables, "Options",5,5);
@@ -26,17 +25,16 @@ public class OptionsMenu extends Menu
 			{
 				System.out.println("Turning music on");
 				Game.music.start();
-				this.interact();
+				this.interact(menu);
 
 			} else
 			{
 				Game.music.stop();
-				this.interact();
+				this.interact(menu);
 			}
 		} else
 		{
-			StartMenu menu = new StartMenu(getResolutionX(),getResolutionY(), getScreen());
-			menu.interact();
+			menu.interact(this);
 		}
 	}
 }
