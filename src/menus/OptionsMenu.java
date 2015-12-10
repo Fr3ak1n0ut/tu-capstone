@@ -7,6 +7,7 @@ import core.KeyListener;
 
 public class OptionsMenu extends Menu
 {
+	KeyListener listener;
 	public OptionsMenu(int resX, int resY, Screen screen)
 	{
 		super(resX, resY, screen);
@@ -17,7 +18,7 @@ public class OptionsMenu extends Menu
 	public void interact()
 	{
 		String[] interactables = { "Music", "Zurück" };
-		int interactionResult = interaction(interactables, "Options");
+		int interactionResult = interaction(interactables, "Options",5,5);
 		if (interactionResult == 5)
 		{
 			boolean musicOn = selectAnswer(30, 5, "Do you want background music?");
@@ -34,7 +35,7 @@ public class OptionsMenu extends Menu
 			}
 		} else
 		{
-			StartMenu menu = new StartMenu(getResolutionX(), getResolutionY(), getScreen());
+			StartMenu menu = new StartMenu(getResolutionX(),getResolutionY(), getScreen());
 			menu.interact();
 		}
 	}

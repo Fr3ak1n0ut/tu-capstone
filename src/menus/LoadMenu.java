@@ -23,7 +23,7 @@ public class LoadMenu extends Menu
 	public void interact()
 	{
 		String[] interactables = { "Slot 1", "Slot 2", "Slot 3", "Slot 4", "Zurück" };
-		int interactionResult = interaction(interactables, "Load Menu");
+		int interactionResult = interaction(interactables, "Load Menu",5, 5);
 		int slot = (interactionResult / 2) - 1;
 		if (interactionResult == 13)
 		{

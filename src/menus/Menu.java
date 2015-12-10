@@ -18,19 +18,19 @@ public abstract class Menu extends Window
 		super(resolutionX, resolutionY, screen);
 	}
 
-	public int interaction(String[] interactables, String heading)
+	public int interaction(String[] interactables, String heading, int x, int y)
 	{
 		getScreen().clear();
-		drawColoredString(heading, Color.BLUE, Color.BLACK, ScreenCharacterStyle.Underline, 5, 3);
-		int startY = 5;
-		int endY = 3 + 2 * interactables.length;
+		drawColoredString(heading, Color.BLUE, Color.BLACK, ScreenCharacterStyle.Underline, x, y - 2);
+		int startY = y;
+		int endY = y - 2 + 2 * interactables.length;
 		getScreen().setCursorPosition(3, 5);
 		resetCursor(0, 0);
 		while (true)
 		{
 			for (int i = 0; i < interactables.length; i++)
 			{
-				drawText(interactables[i], 5, 2 * i + 5);
+				drawText(interactables[i], x, 2 * i + y);
 			}
 			getScreen().getTerminal().setCursorVisible(false);
 			Kind keyKind = listener.getKey();
@@ -116,7 +116,6 @@ public abstract class Menu extends Window
 				getScreen().getCursorPosition().getColumn(), getScreen().getCursorPosition().getRow());
 		getScreen().refresh();
 	}
-
 
 	public abstract void interact();
 

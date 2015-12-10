@@ -19,20 +19,14 @@ public class KeyListener
 
 	public Kind getKey()
 	{
-		Key key = screen.readInput();
-		try
+		Key key = null;
+		while (key == null)
 		{
-			Thread.sleep(50);
-		} catch (InterruptedException e)
-		{
-			e.printStackTrace();
+			key = screen.readInput();
 		}
-		if (key != null)
-		{
-			Kind keyKind = key.getKind();
-			System.out.println(keyKind);
-			return keyKind;
-		} else
-			return null;
+		Kind keyKind = null;
+		keyKind = key.getKind();
+		System.out.println(keyKind);
+		return keyKind;
 	}
 }

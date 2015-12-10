@@ -7,16 +7,8 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.Terminal.Color;
 
-import symbols.Collectable;
-import symbols.DynamicEnemy;
-import symbols.Entry;
-import symbols.Exit;
-import symbols.Key;
-import symbols.Path;
-import symbols.Player;
-import symbols.StaticEnemy;
-import symbols.Symbol;
-import symbols.Wall;
+import menus.PauseMenu;
+import symbols.*;
 
 /**
  * @author Felix Wohnhaas
@@ -37,6 +29,7 @@ public class Core extends Window
 	final char idCollectable = '8';
 	private Player player;
 	private char[][] lvl;
+	KeyListener listener = new KeyListener(getScreen());
 
 	public Core(Screen screen, int resolutionX, int resolutionY)
 	{
@@ -48,6 +41,15 @@ public class Core extends Window
 	{
 		Game.io.loadProperties(level);
 		Game.io.createLevelData();
+		/*if(Game.io.getHeight() < getScreen().getTerminalSize().getRows() && Game.io.getWidth() < getScreen().getTerminalSize().getColumns())
+		{
+			getScreen().getTerminal().getTerminalSize().setColumns(Game.io.getWidth());
+			getScreen().getTerminal().getTerminalSize().setRows(Game.io.getHeight());
+			getScreen().getTerminalSize().setColumns(Game.io.getWidth());		
+			getScreen().getTerminalSize().setRows(Game.io.getHeight());
+			
+		}
+		*/
 		drawLevel(Game.io.getLevel());
 		getScreen().refresh();
 		lvl = Game.io.getLevel();
@@ -135,7 +137,7 @@ public class Core extends Window
 
 	public void update()
 	{
-		while (true)
+		while(true)
 		{
 			move();
 		}
@@ -188,7 +190,6 @@ public class Core extends Window
 
 	public boolean move()
 	{
-		KeyListener listener = new KeyListener(getScreen());
 		Kind kind = listener.getKey();
 		int playerX = player.getPosition().getX();
 		int playerY = player.getPosition().getY();
@@ -214,6 +215,11 @@ public class Core extends Window
 					if (lvl[playerX + 1][playerY] != idWall)
 						setPos(1, 0);
 					break;
+				case Escape:
+					System.out.println("ESC");
+					PauseMenu pause = new PauseMenu(getResolutionX(), getResolutionY(), getScreen());
+					pause.interact();
+					return false;
 				default:
 					setPos(0, 0);
 					break;

@@ -23,7 +23,7 @@ public class StartMenu extends Menu
 	{
 		String[] interactables = { "Neues Spiel starten", "Spiel laden", "Legende", "Optionen",
 				"Spiel beenden" };
-		int interactionResult = interaction(interactables, "Start Menu");
+		int interactionResult = interaction(interactables, "Start Menu", 5, 5);
 		switch (interactionResult)
 		{
 		case 5:
