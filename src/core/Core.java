@@ -1,7 +1,6 @@
 package core;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import com.googlecode.lanterna.input.Key.Kind;
 import com.googlecode.lanterna.screen.Screen;
@@ -39,18 +38,29 @@ public class Core extends Window {
 	}
 
 	public void start() {
-		// drawLevel(resizeArray(lvl));
 		if (Game.player == null) {
+			System.out.println("Player null");
 			region = region(lvl);
 		} else {
-			region = new Coordinates(Game.player.getPosition().getX() / getResolutionX(),
-					Game.player.getPosition().getY() / getResolutionY());
+			if(region == null)
+			{
+				//Add region from io
+				region = new Coordinates(Game.player.getPosition().getX() / getResolutionX(),
+				Game.player.getPosition().getY() / getResolutionY());
+			}
+			System.out.println("Player existing");
+
 		}
-		drawLevel(lvl, region.getX(),region.getY());
+		drawLevel();
 		getScreen().refresh();
 		update();
 	}
 
+	/**
+	 * Für diese Methode muss überprüft werden, ob es auch für ungleiche Level-Größen funktioniert
+	 * @param lvl
+	 * @return
+	 */
 	public Coordinates region(char[][] lvl) {
 		int width = Game.io.getWidth();
 		int height = Game.io.getHeight();
@@ -80,35 +90,22 @@ public class Core extends Window {
 		return new Coordinates(0, 0);
 	}
 
-	public char[][] resizeArray(char[][] lvl) {
-		char[][] level = new char[getResolutionX()][getResolutionY()];
-		for (int i = 0; i < getResolutionX(); i++) {
-			for (int ii = 0; ii < getResolutionY(); ii++) {
-				level[i][ii] = lvl[i + getResolutionX() * region.getX()][ii
-						+ getResolutionY() * region.getY()];
-			}
-		}
-		return level;
-	}
-
-	public void drawLevel(char[][] level, int regionX, int regionY) {
+	public void drawLevel() {
 		Entry entry = null;
 		int posX = 0;
 		int posY = 0;
 		for (int x = 0; x < getResolutionX(); x++) {
 			for (int y = 0; y < getResolutionY(); y++) {
-
-				int levelX = x + (getResolutionX()-1) * region.getX();
-				int levelY = y + (getResolutionY()-1) * region.getY();
+				int levelX = x + getResolutionX() * region.getX();
+				int levelY = y + getResolutionY() * region.getY();
+				System.out.println("Level Coordinates: "+levelX+","+levelY);
 				if (levelY < Game.io.getHeight() && levelX < Game.io.getWidth()) {
-
-					switch (level[levelX][levelY]) {
+					switch (lvl[levelX][levelY]) {
 					case idWall:
 						drawSymbol(new Wall(x, y));
 						break;
 					case idIn:
 						entry = new Entry(x, y);
-						System.out.println("Entry: " + x + ", " + y);
 						posX = x;
 						posY = y;
 						drawSymbol(entry);
@@ -132,10 +129,6 @@ public class Core extends Window {
 					case empty:
 						drawSymbol(new Path(x, y));
 						break;
-					/*
-					 * case idPlayer: Game.player = new Player(levelX, levelY);
-					 * drawSymbol(Game.player); break;
-					 */
 					case idCollectable:
 						drawSymbol(new Collectable(x, y));
 						break;
@@ -146,12 +139,6 @@ public class Core extends Window {
 				}
 			}
 		}
-		// }
-		/*
-		 * if (Game.io.getRegionX() < 10) { Game.io.addRegionX(1); } else {
-		 * Game.io.addRegionX(-Game.io.getRegionX()); Game.io.addRegionY(1); }
-		 * drawLevel(resizeArray(lvl)); }
-		 */
 		/*
 		 * if(!entryFound && !load){ if(regionX*terminalHeight>=levelHeight){
 		 * regionY++; regionX--; } regionX++; setLab((terminalWidth) * regionX,
@@ -161,11 +148,11 @@ public class Core extends Window {
 		 * System.out.println("Y"); Game.io.addRegionY(1); }
 		 */
 		if (Game.player == null) {
-			System.out.println(posX + ", " + posY);
-			Game.player = new Player(posX, posY);
+				Game.player = new Player(posX, posY);
 		}
 		getScreen().setCursorPosition(Game.player.getPosition().getX(), Game.player.getPosition().getY());
 		drawSymbol(Game.player);
+		getScreen().refresh();
 	}
 
 	private void drawSymbol(Symbol symbol) {
@@ -179,7 +166,7 @@ public class Core extends Window {
 	}
 
 	public void update() {
-		getScreen().getTerminal().setCursorVisible(true);
+		getScreen().getTerminal().setCursorVisible(false);
 		boolean game = true;
 		while (game) {
 			game = move();
@@ -195,14 +182,43 @@ public class Core extends Window {
 	private void setPos(int x, int y) throws InterruptedException, IOException {
 		int playerX = Game.player.getPosition().getX();
 		int playerY = Game.player.getPosition().getY();
-		if ((lvl[playerX + x][playerY + y] != idWall
-				|| (lvl[playerX + x][playerY + y] == idOut && Game.player.getHasKey()))
-				&& lvl[playerX + x][playerY + y] != idIn) {
-
+		boolean redraw = false;
+		if(playerX == 0 && x == -1)
+		{
+			region.setX(region.getX()-1);
+			redraw = true;
+		}
+		else if(playerX == getResolutionX()-1 && x == 1)
+		{
+			region.setX(region.getX()+1);
+			drawLevel();
+			redraw = true;
+		}
+		else if(playerY == 0 && y == -1)
+		{
+			region.setY(region.getX()-1);
+			drawLevel();
+			redraw = true;
+		}
+		else if(playerY == getResolutionY()-1 && y == 1)
+		{
+			region.setY(region.getY()+1);
+			drawLevel();
+			redraw = true;
+		}
+		int levelX = playerX + getResolutionX()*region.getX();
+		int levelY = playerY +getResolutionY()*region.getY();
+		if(levelX == 0 && x == -1 || levelY == 0 && y == -1)
+		{
+			return;
+		}
+		if ((lvl[levelX + x][levelY + y] != idWall && lvl[levelX + x][levelY + y] != idIn)
+				|| (lvl[levelX + x][levelY + y] == idOut && Game.player.getHasKey())) {
+			
 			Terminal terminal = getScreen().getTerminal();
 			terminal.setCursorVisible(false);
 			terminal.moveCursor(playerX, playerY);
-			if (lvl[playerX][playerY] == idIn) {
+			if (lvl[levelX][levelY] == idIn) {
 				terminal.applyForegroundColor(Color.GREEN);
 				terminal.putCharacter('\u2691');
 				terminal.applyForegroundColor(Color.WHITE);
@@ -227,7 +243,10 @@ public class Core extends Window {
 				terminal.putCharacter('~');
 			}
 		}
-
+		if(redraw)
+		{
+			drawLevel();
+		}
 	}
 
 	public boolean check() {
@@ -246,6 +265,9 @@ public class Core extends Window {
 			System.out.println("Key");
 			lvl[playerX][playerY] = empty;
 			Game.player.setHasKey(true);
+		} else if (lvl[playerX][playerY] == idCollectable) {
+			Game.player.addScore();
+			// not implemented yet
 		}
 		return true;
 	}

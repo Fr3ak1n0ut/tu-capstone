@@ -22,38 +22,46 @@ public class LegendeMenu extends Menu
 		// do stuff
 	}
 
-	void drawMenu()
+	void drawMenu(boolean clear)
 	{
-		getScreen().clear();
-		getScreen().setCursorPosition(3, 19);
+		if(clear)
+		{
+			getScreen().clear();
+		}else
+		{
+			pauseReset();
+		}
+		int x = getResolutionX() / 2 - 10;
+		int y = getResolutionY() / 2-7;
+		System.out.println(x+","+y);
+		getScreen().setCursorPosition(x-2, y+16);
 		resetCursor(0, 0);
-		drawColoredString("Legende", Color.BLUE, Color.BLACK, ScreenCharacterStyle.Underline, 5, 3);
-		drawText("This is you. Yes, all of them", 7, 5);
-		drawText("This is a moving Enemy. Caution! He will hurt you as soon as he can.", 7, 7);
-		drawText("This is a lazy Enemy. Caution! He is very lazy but he will hurt you if you touch him.", 7,
-				9);
-		drawText("This is a key. Collect one of them and find the exit before the enemies kill you!", 7, 11);
-		drawText("This is the exit. Find it, as fast as possible!", 7, 13);
+		drawColoredString("Legende", Color.BLUE, Color.BLACK, ScreenCharacterStyle.Underline, x, y);
+		drawText("This is you.", x, y+2);
+		drawText("This is a moving Enemy. ", x, y+4);
+		drawText("This is a lazy Enemy.", x,
+				y+6);
+		drawText("This is a key.", x, y+8);
+		drawText("This is the exit.", x,y+10);
 		drawText(
-				"This is the entry. As soon as you enter a Labyrinth, you will not be able to exit through it!",
-				7, 15);
-		drawText("Those are the walls. You cant walk onto them.", 7, 17);
-		drawText("Back to Menu", 5, 19);
+				"This is the entry.",
+				x,y+12);
+		drawText("Those are the walls.", x,y+14);
+		drawText("Back to Menu", x,y+16);
 		getScreen().refresh();
 		getScreen().getTerminal().setCursorVisible(false);
 	}
 
 	@Override
-	public void interact(Menu menu)
+	public void interact(Menu caller)
 	{
-		drawMenu();
+		drawMenu(!(caller instanceof PauseMenu));
 		while (true)
 		{
 			Kind keyKind = listener.getKey();
 			if (keyKind == Key.Kind.Enter)
 			{
-				getScreen().clear();
-				menu.interact(this);
+				caller.interact(this);
 				return;
 			}
 		}

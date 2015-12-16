@@ -7,30 +7,33 @@ package menus;
 import com.googlecode.lanterna.screen.Screen;
 
 import core.Game;
-import core.IOProperties;
 import core.KeyListener;
 
 public class SaveMenu extends Menu {
 
-	public SaveMenu(int resX, int resY, Screen screen) {
+	boolean end;
+	public SaveMenu(int resX, int resY, Screen screen, boolean end) {
 		super(resX, resY, screen);
 		this.listener = new KeyListener(screen);
+		this.end = end;
 	}
 
 	@Override
-	public void interact(Menu menu) {
+	public void interact(Menu caller) {
 		String[] interactables = { "Slot 1", "Slot 2", "Slot 3", "Slot 4", "Zurück" };
-		int interactionResult = interaction(interactables, "Save Menu", 5, 5);
-		int slot = (interactionResult / 2) - 1;
-		if (interactionResult == 13)
-		{
-			menu.interact(this);
+		int x = getResolutionX() / 2 - 10;
+		int y = getResolutionY() / 2 - 5;
+		int interactionResult = interaction(interactables, "Save Menu", x, y, !(caller instanceof PauseMenu));
+		if (interactionResult == interactables.length) {
+			caller.interact(this);
 			return;
+		} else {
+			Game.io.saveLevel("save" + interactionResult + ".properties");
+			if(end)
+			{
+				System.exit(0);
+			}
 		}
-		else
-		{
-			Game.io.saveLevel("save"+slot+".properties");
-		}
-		menu.interact(this);
+		caller.interact(this);
 	}
 }

@@ -9,47 +9,43 @@ import com.googlecode.lanterna.screen.Screen;
 import core.Core;
 import core.KeyListener;
 
-public class StartMenu extends Menu
-{
+public class StartMenu extends Menu {
 
-	public StartMenu(int resolutionX, int resolutionY, Screen screen)
-	{
+	public StartMenu(int resolutionX, int resolutionY, Screen screen) {
 		super(resolutionX, resolutionY, screen);
 		listener = new KeyListener(screen);
 	}
 
 	@Override
-	public void interact(Menu menu)
-	{
-		String[] interactables = { "Neues Spiel starten", "Spiel laden", "Legende", "Optionen",
-				"Spiel beenden" };
-		int interactionResult = interaction(interactables, "Start Menu", 5, 5);
-		switch (interactionResult)
-		{
-		case 5:
-			Core core = new Core(getScreen(),getResolutionX(), getResolutionY(),"level_big_dense.properties");
+	public void interact(Menu caller) {
+		String[] interactables = { "Neues Spiel starten", "Spiel laden", "Legende", "Optionen", "Spiel beenden" };
+		int x = getResolutionX() / 2 - 10;
+		int y = getResolutionY() / 2 - 5;
+		System.out.println(x+","+y);
+		int interactionResult = interaction(interactables, "Start Menu", x, y, true);
+		switch (interactionResult) {
+		case 1:
+			Core core = new Core(getScreen(), getResolutionX(), getResolutionY(), "level_big_dense.properties");
 			core.start();
 			return;
-		case 7:
+		case 2:
 			LoadMenu loadMenu = new LoadMenu(getResolutionX(), getResolutionY(), getScreen());
 			loadMenu.interact(this);
 			return;
-		case 9:
+		case 3:
 			LegendeMenu legende = new LegendeMenu(getResolutionX(), getResolutionY(), getScreen());
 			legende.interact(this);
 			return;
-		case 11:
+		case 4:
 			OptionsMenu options = new OptionsMenu(getResolutionX(), getResolutionY(), getScreen());
 			options.interact(this);
 			return;
-		case 13:
-			boolean save = selectAnswer(30, 13, "Wirklich beenden?");
+		case 5:
+			boolean save = selectAnswer(x+20, y+8, "Wirklich beenden?");
 			System.out.println(save);
-			if (save)
-			{
+			if (save) {
 				System.exit(0);
-			} else
-			{
+			} else {
 				StartMenu startMenu = new StartMenu(getResolutionX(), getResolutionY(), getScreen());
 				startMenu.interact(null);
 			}

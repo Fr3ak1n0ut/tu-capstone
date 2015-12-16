@@ -15,45 +15,42 @@ public class PauseMenu extends Menu {
 	}
 
 	@Override
-	public void interact(Menu menu) {
-		for (int i = getScreen().getTerminalSize().getColumns() / 4; i < 3 * getScreen().getTerminalSize().getColumns()
-				/ 4; i++) {
-			for (int ii = getScreen().getTerminalSize().getRows() / 4; ii < 3 * getScreen().getTerminalSize().getRows()
-					/ 4; ii++) {
-				drawText(" ", i, ii);
-			}
-		}
+	public void interact(Menu caller) {
+
 		getScreen().refresh();
 		String[] interactables = { "Spiel fortsetzen", "Spiel speichern", "Spiel laden", "Legende", "Optionen",
 				"Spiel beenden" };
-		int interactionResult = interaction(interactables, "Pause Menu", 5, 5);
+		int x = getResolutionX() / 2 - 10;
+		int y = getResolutionY() / 2 - 5;
+		int interactionResult = interaction(interactables, "Pause Menu", x, y, false);
 		switch (interactionResult) {
-		case 5:
+		case 1:
 			core.start();
 			return;
-		case 7:
-			SaveMenu saveMenu = new SaveMenu(getResolutionX(), getResolutionY(), getScreen());
+		case 2:
+			SaveMenu saveMenu = new SaveMenu(getResolutionX(), getResolutionY(), getScreen(), false);
 			saveMenu.interact(this);
 			return;
-		case 9:
+		case 3:
 			LoadMenu loadMenu = new LoadMenu(getResolutionX(), getResolutionY(), getScreen());
 			loadMenu.interact(this);
 			return;
-		case 11:
+		case 4:
 			LegendeMenu legende = new LegendeMenu(getResolutionX(), getResolutionY(), getScreen());
 			legende.interact(this);
 			return;
-		case 13:
+		case 5:
 			OptionsMenu options = new OptionsMenu(getResolutionX(), getResolutionY(), getScreen());
 			options.interact(this);
 			return;
-		case 15:
-			boolean save = selectAnswer(30, 13, "Wirklich beenden?");
-			System.out.println(save);
+		case 6:
+			boolean save = selectAnswer(x + 20, y + 10, "Speichern vor dem Beenden?");
 			if (save) {
+				saveMenu = new SaveMenu(getResolutionX(), getResolutionY(), getScreen(), true);
+				saveMenu.interact(this);
 				System.exit(0);
 			} else {
-				this.interact(menu);
+				System.exit(0);
 			}
 			return;
 		}

@@ -21,6 +21,10 @@ public class Player extends Symbol {
 	public void died() {
 		lives--;
 	}
+	
+	public void addScore() {
+		score+=10;
+	}
 
 	public void setHasKey(boolean hasKey) {
 		this.hasKey = hasKey;

@@ -57,7 +57,6 @@ public class Window
 		{
 			writer.drawString(x, y, txt);
 		}
-		screen.refresh();
 	}
 
 }

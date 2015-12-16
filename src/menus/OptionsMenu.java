@@ -14,27 +14,29 @@ public class OptionsMenu extends Menu
 	}
 
 	@Override
-	public void interact(Menu menu)
+	public void interact(Menu caller)
 	{
 		String[] interactables = { "Music", "Zurück" };
-		int interactionResult = interaction(interactables, "Options",5,5);
-		if (interactionResult == 5)
+		int x = getResolutionX() / 2 - 10;
+		int y = getResolutionY() / 2 - 5;
+		int interactionResult = interaction(interactables, "Options",x,y, !(caller instanceof PauseMenu));
+		if (interactionResult == 1)
 		{
-			boolean musicOn = selectAnswer(30, 5, "Do you want background music?");
+			boolean musicOn = selectAnswer(x+20, y, "Do you want background music?");
 			if (musicOn)
 			{
 				System.out.println("Turning music on");
 				Game.music.start();
-				this.interact(menu);
+				this.interact(caller);
 
 			} else
 			{
 				Game.music.stop();
-				this.interact(menu);
+				this.interact(caller);
 			}
 		} else
 		{
-			menu.interact(this);
+			caller.interact(this);
 		}
 	}
 }
