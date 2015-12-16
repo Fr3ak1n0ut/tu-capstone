@@ -1,6 +1,7 @@
 package core;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import com.googlecode.lanterna.input.Key.Kind;
 import com.googlecode.lanterna.screen.Screen;
@@ -28,6 +29,7 @@ public class Core extends Window {
 	final char idCollectable = '8';
 	private char[][] lvl;
 	KeyListener listener = new KeyListener(getScreen());
+	private Coordinates region;
 
 	public Core(Screen screen, int resolutionX, int resolutionY, String filename) {
 		super(resolutionX, resolutionY, screen);
@@ -37,89 +39,119 @@ public class Core extends Window {
 	}
 
 	public void start() {
-		drawLevel(resizeArray(lvl));
+		// drawLevel(resizeArray(lvl));
+		if (Game.player == null) {
+			region = region(lvl);
+		} else {
+			region = new Coordinates(Game.player.getPosition().getX() / getResolutionX(),
+					Game.player.getPosition().getY() / getResolutionY());
+		}
+		drawLevel(lvl, region.getX(),region.getY());
 		getScreen().refresh();
 		update();
+	}
+
+	public Coordinates region(char[][] lvl) {
+		int width = Game.io.getWidth();
+		int height = Game.io.getHeight();
+		if (Game.io.getWidth() > getResolutionX() || Game.io.getHeight() > getResolutionY()) {
+			for (int i = 0; i < lvl[0].length; i++) {
+				if (lvl[0][i] == idIn) {
+					System.out.println("Found: 0," + i);
+					return new Coordinates(0, i / getResolutionY());
+				}
+				if (lvl[width - 1][i] == idIn) {
+					System.out.println("Found: " + (getResolutionX() - 1) + "," + i);
+					return new Coordinates(width / getResolutionX(), i / getResolutionY());
+				}
+			}
+			for (int i = 0; i < height; i++) {
+				if (lvl[i][0] == idIn) {
+					System.out.println("Found: " + i + ",0");
+					return new Coordinates(i / getResolutionX(), 0);
+
+				}
+				if (lvl[i][height - 1] == idIn) {
+					System.out.println("Found: " + i + ", 499");
+					return new Coordinates(i / (getResolutionX()), height / (getResolutionY()));
+				}
+			}
+		}
+		return new Coordinates(0, 0);
 	}
 
 	public char[][] resizeArray(char[][] lvl) {
 		char[][] level = new char[getResolutionX()][getResolutionY()];
 		for (int i = 0; i < getResolutionX(); i++) {
 			for (int ii = 0; ii < getResolutionY(); ii++) {
-				level[i][ii] = lvl[i + getResolutionX() * Game.io.getRegionX()][ii
-						+ getResolutionY() * Game.io.getRegionY()];
+				level[i][ii] = lvl[i + getResolutionX() * region.getX()][ii
+						+ getResolutionY() * region.getY()];
 			}
 		}
 		return level;
 	}
 
-	public void drawLevel(char[][] level) {
+	public void drawLevel(char[][] level, int regionX, int regionY) {
 		Entry entry = null;
 		int posX = 0;
 		int posY = 0;
 		for (int x = 0; x < getResolutionX(); x++) {
 			for (int y = 0; y < getResolutionY(); y++) {
-				/*
-				 * int levelX = x + getResolutionX() * Game.io.getRegionX(); int
-				 * levelY = y + getResolutionY() * Game.io.getRegionY(); if
-				 * (levelY < Game.io.getHeight() && levelX < Game.io.getWidth())
-				 * {
-				 */
-				switch (level[x][y]) {
-				case idWall:
-					drawSymbol(new Wall(x, y), x, y);
-					break;
-				case idIn:
-					entry = new Entry(x, y);
-					posX = x;
-					posY = y;
-					drawSymbol(entry, x, y);
-					break;
-				case idOut:
-					drawSymbol(new Exit(x, y), x, y);
-					break;
-				case idStaticTrap:
-					drawSymbol(new StaticEnemy(x, y), x, y);
-					break;
-				case idDynamicTrap:
-					// Don´t loop this yet, will add new enemy every
-					// time
-					DynamicEnemy enemy = new DynamicEnemy(x, y);
-					drawSymbol(enemy, x, y);
-					// dynamicEnemyList.add(enemy);
-					break;
-				case idKey:
-					drawSymbol(new Key(x, y), x, y);
-					break;
-				case empty:
-					drawSymbol(new Path(x, y), x, y);
-					break;
-				/*
-				 * case idPlayer: Game.player = new Player(levelX, levelY);
-				 * drawSymbol(Game.player); break;
-				 */
-				case idCollectable:
-					drawSymbol(new Collectable(x, y), x, y);
-					break;
-				default:
-					drawSymbol(new Path(x, y), x, y);
-					break;
+
+				int levelX = x + (getResolutionX()-1) * region.getX();
+				int levelY = y + (getResolutionY()-1) * region.getY();
+				if (levelY < Game.io.getHeight() && levelX < Game.io.getWidth()) {
+
+					switch (level[levelX][levelY]) {
+					case idWall:
+						drawSymbol(new Wall(x, y));
+						break;
+					case idIn:
+						entry = new Entry(x, y);
+						System.out.println("Entry: " + x + ", " + y);
+						posX = x;
+						posY = y;
+						drawSymbol(entry);
+						break;
+					case idOut:
+						drawSymbol(new Exit(x, y));
+						break;
+					case idStaticTrap:
+						drawSymbol(new StaticEnemy(x, y));
+						break;
+					case idDynamicTrap:
+						// Don´t loop this yet, will add new enemy every
+						// time
+						DynamicEnemy enemy = new DynamicEnemy(x, y);
+						drawSymbol(enemy);
+						// dynamicEnemyList.add(enemy);
+						break;
+					case idKey:
+						drawSymbol(new Key(x, y));
+						break;
+					case empty:
+						drawSymbol(new Path(x, y));
+						break;
+					/*
+					 * case idPlayer: Game.player = new Player(levelX, levelY);
+					 * drawSymbol(Game.player); break;
+					 */
+					case idCollectable:
+						drawSymbol(new Collectable(x, y));
+						break;
+					default:
+						drawSymbol(new Path(x, y));
+						break;
+					}
 				}
 			}
 		}
 		// }
-		if (entry == null && Game.player == null) {
-			if(Game.io.getRegionX() < 10)
-			{
-				Game.io.addRegionX(1);
-			}
-			else
-			{
-				Game.io.addRegionX(-Game.io.getRegionX());
-				Game.io.addRegionY(1);
-			}
-			drawLevel(resizeArray(lvl));
-		}
+		/*
+		 * if (Game.io.getRegionX() < 10) { Game.io.addRegionX(1); } else {
+		 * Game.io.addRegionX(-Game.io.getRegionX()); Game.io.addRegionY(1); }
+		 * drawLevel(resizeArray(lvl)); }
+		 */
 		/*
 		 * if(!entryFound && !load){ if(regionX*terminalHeight>=levelHeight){
 		 * regionY++; regionX--; } regionX++; setLab((terminalWidth) * regionX,
@@ -128,23 +160,20 @@ public class Core extends Window {
 		 * if (Game.io.getWidth() > Game.io.getRegionX() * getResolutionX())
 		 * System.out.println("Y"); Game.io.addRegionY(1); }
 		 */
-		if (Game.player == null)
-
-		{
+		if (Game.player == null) {
 			System.out.println(posX + ", " + posY);
 			Game.player = new Player(posX, posY);
 		}
-
 		getScreen().setCursorPosition(Game.player.getPosition().getX(), Game.player.getPosition().getY());
-		drawSymbol(Game.player, Game.player.getPosition().getX(), Game.player.getPosition().getY());
-		getScreen().refresh();
+		drawSymbol(Game.player);
 	}
 
-	private void drawSymbol(Symbol symbol, int x, int y) {
+	private void drawSymbol(Symbol symbol) {
 		char character = symbol.getSymbol();
 		Terminal.Color background = symbol.getBackgroundColor();
 		Terminal.Color foreground = symbol.getForegroundColor();
-		drawColoredString(character + "", foreground, background, null, x, y);
+		drawColoredString(character + "", foreground, background, null, symbol.getPosition().getX(),
+				symbol.getPosition().getY());
 		getScreen().getTerminal().applyBackgroundColor(Color.BLACK);
 		getScreen().getTerminal().applyForegroundColor(Color.BLACK);
 	}

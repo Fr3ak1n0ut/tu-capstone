@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Felix/OneDrive/Dokumente/Eclipse/CapstoneProject/lanterna-2.1.7.jar" sourcepath="C:/Users/Felix/OneDrive/Dokumente/Eclipse/lanterna-2.1.7-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Felix Wohnhaas/Documents/SourceTree/Capstone/lanterna-2.1.7.jar" sourcepath="C:/Users/Felix/OneDrive/Dokumente/Eclipse/lanterna-2.1.7-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:file:/C:/Users/Felix/OneDrive/Dokumente/Eclipse/lanterna-2.1.7-javadoc.jar!/"/>
 		</attributes>

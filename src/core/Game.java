@@ -22,10 +22,10 @@ public class Game
 		io = new IOProperties();
 		music = new Audio("music.wav");
 //		music.start();
-		Screen screen = TerminalFacade.createScreen();
-//		Terminal terminal = TerminalFacade.createSwingTerminal(200, 100);
-//		Screen screen = TerminalFacade.createScreen(terminal);
-		StartMenu start = new StartMenu(200, 60, screen);
+//		Screen screen = TerminalFacade.createScreen();
+		Terminal terminal = TerminalFacade.createSwingTerminal(200, 60);
+		Screen screen = TerminalFacade.createScreen(terminal);
+		StartMenu start = new StartMenu(screen.getTerminalSize().getColumns(), screen.getTerminalSize().getRows(), screen);
 		screen.startScreen();
 		start.interact(null);
 	}

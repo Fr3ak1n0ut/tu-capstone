@@ -17,8 +17,8 @@ public class IOProperties {
 
 	private int width;
 	private int height;
-	private int regionX;
-	private int regionY;
+//	private int regionX;
+//	private int regionY;
 
 	private char[][] lvl;
 
@@ -34,20 +34,20 @@ public class IOProperties {
 		return width;
 	}
 
-	public int getRegionX() {
-		return regionX;
-	}
+//	public int getRegionX() {
+//		return regionX;
+//	}
 
-	public int getRegionY() {
-		return regionY;
-	}
+//	public int getRegionY() {
+//		return regionY;
+//	}
 	
-	public void addRegionX(int amount) {
-		this.regionX += amount;
-	}
-	public void addRegionY(int amount) {
-		this.regionY += amount;
-	}
+//	public void addRegionX(int amount) {
+//		this.regionX += amount;
+//	}
+//	public void addRegionY(int amount) {
+//		this.regionY += amount;
+//	}
 
 	public boolean saveLevel(String filename) {
 		Properties saveProp = new Properties();
@@ -63,8 +63,8 @@ public class IOProperties {
 		saveProp.setProperty("posX", Game.player.getPosition().getX() + "");
 		saveProp.setProperty("posY", Game.player.getPosition().getY() + "");
 		saveProp.setProperty("hasKey", Game.player.getHasKey() + "");
-		saveProp.setProperty("regionX", regionX + "");
-		saveProp.setProperty("regionY", regionY + "");
+//		saveProp.setProperty("regionX", regionX + "");
+//		saveProp.setProperty("regionY", regionY + "");
 		saveProp.setProperty("score", Game.player.getScore() + "");
 		saveProp.setProperty("lives", Game.player.getLives() + "");
 		try {
@@ -110,8 +110,8 @@ public class IOProperties {
 				int posX = Integer.parseInt(props.getProperty("posX"));
 				int posY = Integer.parseInt(props.getProperty("posY"));
 				Game.player = new Player(posX, posY);
-				regionX = Integer.parseInt(props.getProperty("regionX"));
-				regionY = Integer.parseInt(props.getProperty("regionY"));
+//				regionX = Integer.parseInt(props.getProperty("regionX"));
+//				regionY = Integer.parseInt(props.getProperty("regionY"));
 				Game.player.setLives(Integer.parseInt(props.getProperty("lives")));
 				Game.player.setScore(Integer.parseInt(props.getProperty("score")));
 				Game.player.setHasKey(Boolean.parseBoolean(props.getProperty("hasKey")));
