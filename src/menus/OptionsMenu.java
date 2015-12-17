@@ -22,7 +22,7 @@ public class OptionsMenu extends Menu
 		int interactionResult = interaction(interactables, "Options",x,y, !(caller instanceof PauseMenu));
 		if (interactionResult == 1)
 		{
-			boolean musicOn = selectAnswer(x+20, y, "Do you want background music?");
+			boolean musicOn = selectAnswer(x+15, y, "Do you want background music?");
 			if (musicOn)
 			{
 				System.out.println("Turning music on");

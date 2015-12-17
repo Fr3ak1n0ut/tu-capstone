@@ -24,6 +24,9 @@ public class PauseMenu extends Menu {
 		int y = getResolutionY() / 2 - 5;
 		int interactionResult = interaction(interactables, "Pause Menu", x, y, false);
 		switch (interactionResult) {
+		case -1:
+			core.start();
+			return;
 		case 1:
 			core.start();
 			return;
@@ -44,7 +47,7 @@ public class PauseMenu extends Menu {
 			options.interact(this);
 			return;
 		case 6:
-			boolean save = selectAnswer(x + 20, y + 10, "Speichern vor dem Beenden?");
+			boolean save = selectAnswer(x + 15, y + 10, "Speichern vor dem Beenden?");
 			if (save) {
 				saveMenu = new SaveMenu(getResolutionX(), getResolutionY(), getScreen(), true);
 				saveMenu.interact(this);

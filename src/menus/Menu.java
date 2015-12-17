@@ -72,6 +72,11 @@ public abstract class Menu extends Window {
 					break;
 				case Enter:
 					return pos;
+				case Escape:
+					if(this instanceof PauseMenu)
+					{
+						return -1;
+					}
 				default:
 					break;
 				}

@@ -23,7 +23,7 @@ public class Game
 		music = new Audio("music.wav");
 //		music.start();
 //		Screen screen = TerminalFacade.createScreen();
-		Terminal terminal = TerminalFacade.createSwingTerminal(200, 60);
+		Terminal terminal = TerminalFacade.createSwingTerminal(150, 60);
 		Screen screen = TerminalFacade.createScreen(terminal);
 		StartMenu start = new StartMenu(screen.getTerminalSize().getColumns(), screen.getTerminalSize().getRows(), screen);
 		screen.startScreen();
