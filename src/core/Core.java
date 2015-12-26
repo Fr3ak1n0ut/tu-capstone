@@ -1,12 +1,11 @@
 package core;
 
 import java.io.IOException;
-
+import java.util.Random;
 import com.googlecode.lanterna.input.Key.Kind;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.Terminal.Color;
-
 import menus.PauseMenu;
 import symbols.*;
 
@@ -15,7 +14,6 @@ import symbols.*;
  *
  */
 public class Core extends Window {
-	// private List<DynamicEnemy> dynamicEnemyList = new ArrayList<>();
 
 	final char idWall = '0';
 	final char idIn = '1';
@@ -27,35 +25,30 @@ public class Core extends Window {
 	final char idPlayer = '7';
 	final char idCollectable = '8';
 	final int realWidth = getResolutionX();
-	final int realHeight = getResolutionY() -5;
-	
-	private char[][] lvl;
+	final int realHeight = getResolutionY() - 3;
+	public static DynamicEnemy[] dynamicEnemies;
+	int enemies = 0;
+
 	KeyListener listener = new KeyListener(getScreen());
-	private Coordinates region;
+	public static Coordinates region;
 
 	public Core(Screen screen, int resolutionX, int resolutionY, String filename) {
 		super(resolutionX, resolutionY, screen);
 		Game.io.loadProperties(filename);
 		Game.io.createLevelData();
-		lvl = Game.io.getLvl();
 	}
 
 	public void start() {
 		getScreen().clear();
-		if (Game.player == null) {
-			System.out.println("Player null");
-			region = region(lvl);
-		} else {
-			if (region == null) {
-				// Add region from io
-				region = new Coordinates(Game.player.getPosition().getX() / realWidth,
-						Game.player.getPosition().getY() / realHeight);
-			}
-			System.out.println("Player existing");
-
+		if (region == null) {
+			System.out.println("region null");
+			region = region(Game.io.getLvl());
 		}
 		drawLevel();
 		getScreen().refresh();
+//		Runnable enemyThread = new Movement(getScreen(), getResolutionX(), getResolutionY(), this);
+//		Thread t = new Thread(enemyThread);
+//		t.start();
 		update();
 	}
 
@@ -95,7 +88,74 @@ public class Core extends Window {
 		return new Coordinates(0, 0);
 	}
 
+	public void dynamicEnemy() {
+		for (int i = 0; i < dynamicEnemies.length; i++) {
+			if (dynamicEnemies[i] != null) {
+				System.out.println(dynamicEnemies[i].getPosition().toString());
+				dynamicEnemies[i] = moveEnemy(dynamicEnemies[i]);
+				System.out.println(dynamicEnemies[i].getPosition().toString());
+				drawSymbol(dynamicEnemies[i]);
+			}
+		}
+		getScreen().refresh();
+		getScreen().getTerminal().setCursorVisible(false);
+	}
+
+	public DynamicEnemy moveEnemy(DynamicEnemy enemy) {
+		Random rand = new Random();
+		int direction = rand.nextInt(4);
+		Coordinates pos = enemy.getPosition();
+		int offsetX = 0;
+		int offsetY = 0;
+		switch (direction) {
+		case 0:
+			offsetX = -1;
+			break;
+		case 1:
+			offsetX = 1;
+			break;
+		case 2:
+			offsetY = -1;
+			break;
+		case 3:
+			offsetY = 1;
+			break;
+		}
+		int x = pos.getX() + region.getX() * realWidth;
+		int y = pos.getY() + region.getY() * realHeight;
+		System.out.println(x + "," + y);
+		if (x < Game.io.getWidth() && y < Game.io.getHeight()) {
+			char lvlPos = Game.io.getLvl()[x + offsetX][y + offsetY];
+			if (lvlPos != idIn && lvlPos != idOut && lvlPos != idWall) {
+				System.out.println("move");
+				Game.io.getLvl()[x][y] = empty;
+				Game.io.getLvl()[x + offsetX][y + offsetY] = idDynamicTrap;
+				drawColoredString(" ", Color.BLACK, Color.BLACK, null, pos.getX(), pos.getY());
+				return new DynamicEnemy(pos.getX() + offsetX, pos.getY() + offsetY);
+			}
+		}
+		System.out.println("no move");
+		return enemy;
+	}
+
+	public void drawBorder() {
+		for (int x = 0; x < realWidth; x++) {
+			drawColoredString("=", Color.GREEN, Color.BLACK, null, x, realHeight);
+			drawColoredString(" ", Color.BLACK, Color.BLACK, null, x, realHeight + 1);
+		}
+		System.out.println("Lives: " + Game.player.getLives());
+		for (int i = 0; i < Game.player.getLives(); i++) {
+			drawColoredString("H", Color.RED, Color.BLACK, null, 2 * i + 3, realHeight + 1);
+		}
+		if (Game.player.hasKey()) {
+			drawColoredString("K", Color.CYAN, Color.BLACK, null, 15, realHeight + 1);
+		}
+		getScreen().refresh();
+	}
+
 	public void drawLevel() {
+		enemies = 0;
+		dynamicEnemies = new DynamicEnemy[50];
 		int levelX = 0;
 		int levelY = 0;
 		Entry entry = null;
@@ -106,7 +166,7 @@ public class Core extends Window {
 				levelX = x + realWidth * region.getX();
 				levelY = y + realHeight * region.getY();
 				if (levelY < Game.io.getHeight() && levelX < Game.io.getWidth()) {
-					switch (lvl[levelX][levelY]) {
+					switch (Game.io.getLvl()[levelX][levelY]) {
 					case idWall:
 						drawSymbol(new Wall(x, y));
 						break;
@@ -123,11 +183,10 @@ public class Core extends Window {
 						drawSymbol(new StaticEnemy(x, y));
 						break;
 					case idDynamicTrap:
-						// Don´t loop this yet, will add new enemy every
-						// time
 						DynamicEnemy enemy = new DynamicEnemy(x, y);
 						drawSymbol(enemy);
-						// dynamicEnemyList.add(enemy);
+						dynamicEnemies[enemies] = enemy;
+						enemies++;
 						break;
 					case idKey:
 						drawSymbol(new Key(x, y));
@@ -145,55 +204,44 @@ public class Core extends Window {
 				}
 			}
 		}
-		System.out.println("Level Coordinates: " + levelX + "," + levelY);
-		/*
-		 * if(!entryFound && !load){ if(regionX*terminalHeight>=levelHeight){
-		 * regionY++; regionX--; } regionX++; setLab((terminalWidth) * regionX,
-		 * (terminalHeight-3) * regionY);
-		 *
-		 * if (Game.io.getWidth() > Game.io.getRegionX() * getResolutionX())
-		 * System.out.println("Y"); Game.io.addRegionY(1); }
-		 */
 		if (Game.player == null) {
 			Game.player = new Player(posX, posY);
 		}
 		getScreen().setCursorPosition(Game.player.getPosition().getX(), Game.player.getPosition().getY());
 		drawSymbol(Game.player);
 		getScreen().refresh();
+		getScreen().getTerminal().setCursorVisible(false);
 	}
 
-	private void drawSymbol(Symbol symbol) {
+	public void drawSymbol(Symbol symbol) {
 		char character = symbol.getSymbol();
 		Terminal.Color background = symbol.getBackgroundColor();
 		Terminal.Color foreground = symbol.getForegroundColor();
 		drawColoredString(character + "", foreground, background, null, symbol.getPosition().getX(),
 				symbol.getPosition().getY());
-		getScreen().getTerminal().applyBackgroundColor(Color.BLACK);
-		getScreen().getTerminal().applyForegroundColor(Color.BLACK);
 	}
 
 	public void update() {
-		getScreen().getTerminal().setCursorVisible(false);
+		drawBorder();
 		boolean game = true;
 		while (game) {
+			getScreen().getTerminal().setCursorVisible(false);
+			 dynamicEnemy();
 			game = move();
 			game = check();
+			drawBorder();
 		}
-		System.out.println("Lost.");
-		// Movement
-		// Game Logic
-		// Update Lab
-		// Menu Invoke
+		System.out.println("Over.");
 	}
 
 	private void setPos(int x, int y) throws InterruptedException, IOException {
 		int playerX = Game.player.getPosition().getX();
 		int playerY = Game.player.getPosition().getY();
-		System.out.println("Region: "+region.toString());
+		System.out.println("Region: " + region.toString());
 		Terminal terminal = getScreen().getTerminal();
 		boolean redraw = false;
 		if (playerX == 0 && x == -1) {
-			char obstacle = lvl[region.getX() * realWidth - 1][playerY + region.getY() * realHeight];
+			char obstacle = Game.io.getLvl()[region.getX() * realWidth - 1][playerY + region.getY() * realHeight];
 			if (obstacle != idWall) {
 				terminal.moveCursor(playerX, playerY);
 				terminal.putCharacter(' ');
@@ -206,7 +254,7 @@ public class Core extends Window {
 				return;
 			}
 		} else if (playerX == realWidth - 1 && x == 1) {
-			char obstacle = lvl[realWidth + region.getX() * realWidth][playerY
+			char obstacle = Game.io.getLvl()[realWidth + region.getX() * realWidth][playerY
 					+ region.getY() * realHeight];
 			if (obstacle != idWall) {
 				terminal.moveCursor(playerX, playerY);
@@ -221,7 +269,7 @@ public class Core extends Window {
 			}
 		} else if (playerY == 0 && y == -1) {
 			System.out.println(region.getY());
-			char obstacle = lvl[playerX + region.getX() * realWidth][region.getY() * realHeight - 1];
+			char obstacle = Game.io.getLvl()[playerX + region.getX() * realWidth][region.getY() * realHeight - 1];
 			if (obstacle != idWall) {
 				terminal.moveCursor(playerX, playerY);
 				terminal.putCharacter(' ');
@@ -234,7 +282,7 @@ public class Core extends Window {
 				return;
 			}
 		} else if (playerY == realHeight - 1 && y == 1) {
-			char obstacle = lvl[playerX + region.getX() * realWidth][realHeight
+			char obstacle = Game.io.getLvl()[playerX + region.getX() * realWidth][realHeight
 					+ region.getY() * realHeight];
 			if (obstacle != idWall) {
 				terminal.moveCursor(playerX, playerY);
@@ -251,14 +299,15 @@ public class Core extends Window {
 
 		int levelX = playerX + realWidth * region.getX();
 		int levelY = playerY + realHeight * region.getY();
-		if (levelX == 0 && x == -1 || levelY == 0 && y == -1 || levelX == Game.io.getWidth() && x == 1 || levelY == Game.io.getHeight() && y == 1) {
+		if (levelX == 0 && x == -1 || levelY == 0 && y == -1 || levelX == Game.io.getWidth() && x == 1
+				|| levelY == Game.io.getHeight() && y == 1) {
 			return;
 		}
-		if ((lvl[levelX + x][levelY + y] != idWall && lvl[levelX + x][levelY + y] != idIn)
-				|| (lvl[levelX + x][levelY + y] == idOut && Game.player.getHasKey())) {
+		if ((Game.io.getLvl()[levelX + x][levelY + y] != idWall && Game.io.getLvl()[levelX + x][levelY + y] != idIn)
+				|| (Game.io.getLvl()[levelX + x][levelY + y] == idOut && Game.player.hasKey())) {
 			terminal.setCursorVisible(false);
 			terminal.moveCursor(playerX, playerY);
-			if (lvl[levelX][levelY] == idIn) {
+			if (Game.io.getLvl()[levelX][levelY] == idIn) {
 				terminal.applyForegroundColor(Color.GREEN);
 				terminal.putCharacter('\u2691');
 				terminal.applyForegroundColor(Color.WHITE);
@@ -268,7 +317,7 @@ public class Core extends Window {
 
 			Game.player.getPosition().setX(playerX + x);
 			Game.player.getPosition().setY(playerY + y);
-			terminal.applyBackgroundColor(Terminal.Color.BLACK);
+			// terminal.applyBackgroundColor(Terminal.Color.BLACK);
 			terminal.applyForegroundColor(Terminal.Color.WHITE);
 			terminal.moveCursor(playerX + x, playerY + y);
 			if (x == -1 && y == 0) {
@@ -289,29 +338,52 @@ public class Core extends Window {
 			getScreen().clear();
 			drawLevel();
 		}
-
 		System.out.println("Player pos: " + playerX + "," + playerY);
 	}
 
 	public boolean check() {
 		int playerX = Game.player.getPosition().getX();
 		int playerY = Game.player.getPosition().getY();
-		if (lvl[playerX][playerY] == idStaticTrap || lvl[playerX][playerY] == idDynamicTrap) {
-			lvl[playerX][playerY] = empty;
-			System.out.println("Enemy");
+		char pos = Game.io.getLvl()[playerX + region.getX() * realWidth][playerY + region.getY() * realHeight];
+		switch (pos) {
+		case idStaticTrap:
+			Game.io.getLvl()[playerX + region.getX() * realWidth][playerY + region.getY() * realHeight] = empty;
 			Game.player.died();
 			System.out.println(Game.player.getLives());
 			if (Game.player.getLives() <= 0) {
 				return false;
 			}
-			// writer.drawString(10 + 2 * lives, terminalHeight - 2, " ");
-		} else if (lvl[playerX][playerY] == idKey) {
+			break;
+		case idDynamicTrap:
+			for (int i = 0; i < dynamicEnemies.length; i++) {
+				DynamicEnemy e = dynamicEnemies[i];
+				if (e != null) {
+					if (e.getPosition().getX() == playerX && e.getPosition().getY() == playerY) {
+						dynamicEnemies[i] = null;
+					}
+				}
+			}
+			Game.io.getLvl()[playerX + region.getX() * realWidth][playerY + region.getY() * realHeight] = empty;
+			Game.player.died();
+			System.out.println(Game.player.getLives());
+			if (Game.player.getLives() <= 0) {
+				return false;
+			}
+			break;
+		case idKey:
 			System.out.println("Key");
-			lvl[playerX][playerY] = empty;
+			Game.io.getLvl()[playerX + region.getX() * realWidth][playerY + region.getY() * realHeight] = empty;
 			Game.player.setHasKey(true);
-		} else if (lvl[playerX][playerY] == idCollectable) {
+			break;
+		case idOut:
+			Game.io.getLvl()[playerX + region.getX() * realWidth][playerY + region.getY() * realHeight] = empty;
+			System.out.println("WON");
+			return false;
+		case idCollectable:
+			Game.io.getLvl()[playerX + region.getX() * realWidth][playerY + region.getY() * realHeight] = empty;
 			Game.player.addScore();
-			// not implemented yet
+		default:
+			break;
 		}
 		return true;
 	}
@@ -335,7 +407,7 @@ public class Core extends Window {
 					setPos(1, 0);
 					break;
 				case Escape:
-					PauseMenu pause = new PauseMenu(realWidth, realHeight, getScreen(), this);
+					PauseMenu pause = new PauseMenu(getResolutionX(), getResolutionY(), getScreen(), this);
 					pause.interact(null);
 					return false;
 				default:

@@ -10,7 +10,7 @@ public class Player extends Symbol {
 	private int lives = 3;
 	private int score = 0;
 	private boolean hasKey = false;
-	private final static Terminal.Color color = Terminal.Color.CYAN;
+	private final static Terminal.Color color = Terminal.Color.WHITE;
 	private static final int value = 7;
 	private static final char symbol = '~';
 
@@ -30,7 +30,7 @@ public class Player extends Symbol {
 		this.hasKey = hasKey;
 	}
 
-	public boolean getHasKey() {
+	public boolean hasKey() {
 		return hasKey;
 	}
 

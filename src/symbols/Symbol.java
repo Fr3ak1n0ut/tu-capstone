@@ -1,14 +1,13 @@
 package symbols;
 
 import com.googlecode.lanterna.terminal.Terminal;
+import com.googlecode.lanterna.terminal.Terminal.Color;
+import core.Coordinates;
+
 /**
  *
  * @author Felix Wohnhaas
  */
-import com.googlecode.lanterna.terminal.Terminal.Color;
-
-import core.Coordinates;
-import core.Window;
 public class Symbol {
     
     private Coordinates position;

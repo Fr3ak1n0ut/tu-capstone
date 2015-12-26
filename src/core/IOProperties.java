@@ -17,8 +17,6 @@ public class IOProperties {
 
 	private int width;
 	private int height;
-//	private int regionX;
-//	private int regionY;
 
 	private char[][] lvl;
 
@@ -34,21 +32,6 @@ public class IOProperties {
 		return width;
 	}
 
-//	public int getRegionX() {
-//		return regionX;
-//	}
-
-//	public int getRegionY() {
-//		return regionY;
-//	}
-	
-//	public void addRegionX(int amount) {
-//		this.regionX += amount;
-//	}
-//	public void addRegionY(int amount) {
-//		this.regionY += amount;
-//	}
-
 	public boolean saveLevel(String filename) {
 		Properties saveProp = new Properties();
 		for (int i = 0; i < width; i++) {
@@ -62,9 +45,9 @@ public class IOProperties {
 		saveProp.setProperty("Height", height + "");
 		saveProp.setProperty("posX", Game.player.getPosition().getX() + "");
 		saveProp.setProperty("posY", Game.player.getPosition().getY() + "");
-		saveProp.setProperty("hasKey", Game.player.getHasKey() + "");
-//		saveProp.setProperty("regionX", regionX + "");
-//		saveProp.setProperty("regionY", regionY + "");
+		saveProp.setProperty("hasKey", Game.player.hasKey() + "");
+		saveProp.setProperty("regionX", Core.region.getX() + "");
+		saveProp.setProperty("regionY", Core.region.getY() + "");
 		saveProp.setProperty("score", Game.player.getScore() + "");
 		saveProp.setProperty("lives", Game.player.getLives() + "");
 		try {
@@ -88,10 +71,9 @@ public class IOProperties {
 				String[] keyCoordinates = key.split(",");
 				int x = Integer.parseInt(keyCoordinates[0]);
 				int y = Integer.parseInt(keyCoordinates[1]);
-				if (val.charAt(0) == '2') {
-					// exits++;
-				} else if (val.charAt(0) == '4') {
-					// dynamicEnemies++;
+				if(val.charAt(0) != '0')
+				{
+					System.out.println(val);
 				}
 				lvl[x][y] = val.charAt(0);
 			}
@@ -106,16 +88,14 @@ public class IOProperties {
 			props.load(in);
 			width = Integer.parseInt(props.getProperty("Width"));
 			height = Integer.parseInt(props.getProperty("Height"));
-//			if (props.contains("regionX") && props.contains("regionY")) {
-				int posX = Integer.parseInt(props.getProperty("posX"));
-				int posY = Integer.parseInt(props.getProperty("posY"));
-				Game.player = new Player(posX, posY);
-//				regionX = Integer.parseInt(props.getProperty("regionX"));
-//				regionY = Integer.parseInt(props.getProperty("regionY"));
-				Game.player.setLives(Integer.parseInt(props.getProperty("lives")));
-				Game.player.setScore(Integer.parseInt(props.getProperty("score")));
-				Game.player.setHasKey(Boolean.parseBoolean(props.getProperty("hasKey")));
-//			}
+			int posX = Integer.parseInt(props.getProperty("posX"));
+			int posY = Integer.parseInt(props.getProperty("posY"));
+			Game.player = new Player(posX, posY);
+			Core.region = new Coordinates(Integer.parseInt(props.getProperty("regionX")), Integer.parseInt(props.getProperty("regionY")));
+			Game.player.setLives(Integer.parseInt(props.getProperty("lives")));
+			Game.player.setScore(Integer.parseInt(props.getProperty("score")));
+			Game.player.setHasKey(Boolean.parseBoolean(props.getProperty("hasKey")));
+			// }
 			in.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();

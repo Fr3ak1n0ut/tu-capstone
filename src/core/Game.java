@@ -7,7 +7,6 @@ package core;
 import com.googlecode.lanterna.TerminalFacade;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.Terminal;
-
 import menus.StartMenu;
 import symbols.Player;
 
