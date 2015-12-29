@@ -140,15 +140,15 @@ public class Core extends Window {
 
 	public void drawBorder() {
 		for (int x = 0; x < realWidth; x++) {
-			drawColoredString("=", Color.GREEN, Color.BLACK, null, x, realHeight);
+			drawColoredString("\u2550", Color.GREEN, Color.BLACK, null, x, realHeight);
 			drawColoredString(" ", Color.BLACK, Color.BLACK, null, x, realHeight + 1);
 		}
 		System.out.println("Lives: " + Game.player.getLives());
 		for (int i = 0; i < Game.player.getLives(); i++) {
-			drawColoredString("H", Color.RED, Color.BLACK, null, 2 * i + 3, realHeight + 1);
+			drawColoredString("\u2665", Color.RED, Color.BLACK, null, 2 * i + 3, realHeight + 1);
 		}
 		if (Game.player.hasKey()) {
-			drawColoredString("K", Color.CYAN, Color.BLACK, null, 15, realHeight + 1);
+			drawColoredString("\u06DE", Color.CYAN, Color.BLACK, null, 15, realHeight + 1);
 		}
 		getScreen().refresh();
 	}
@@ -189,7 +189,7 @@ public class Core extends Window {
 						enemies++;
 						break;
 					case idKey:
-						drawSymbol(new Key(x, y));
+						drawSymbol(new Keys(x, y));
 						break;
 					case empty:
 						drawSymbol(new Path(x, y));
@@ -232,6 +232,7 @@ public class Core extends Window {
 			drawBorder();
 		}
 		System.out.println("Over.");
+		System.exit(0);
 	}
 
 	private void setPos(int x, int y) throws InterruptedException, IOException {
@@ -309,7 +310,7 @@ public class Core extends Window {
 			terminal.moveCursor(playerX, playerY);
 			if (Game.io.getLvl()[levelX][levelY] == idIn) {
 				terminal.applyForegroundColor(Color.GREEN);
-				terminal.putCharacter('\u2691');
+				terminal.putCharacter(Entry.symbol);
 				terminal.applyForegroundColor(Color.WHITE);
 			} else {
 				terminal.putCharacter(' ');

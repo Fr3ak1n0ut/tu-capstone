@@ -9,7 +9,7 @@ public class Wall extends Symbol {
     
     private static final Terminal.Color foregroundColor = Terminal.Color.BLUE;
     private static final Terminal.Color backgroundColor = Terminal.Color.WHITE;
-    private static final char symbol = '\u0020';
+    public static final char symbol = '\u0020';
     private static final int value = 0;
     
     public Wall(int x, int y)

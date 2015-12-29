@@ -7,7 +7,7 @@ import com.googlecode.lanterna.terminal.Terminal;
  */
 public class Collectable extends Symbol{
     private static final Terminal.Color color = Terminal.Color.YELLOW;
-    private static final char symbol = '\u2666';
+    public static final char symbol = '\u2666';
     private static final int value = 8;
     
     public Collectable(int x, int y)

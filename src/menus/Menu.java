@@ -15,33 +15,34 @@ public abstract class Menu extends Window {
 	public Menu(int resolutionX, int resolutionY, Screen screen) {
 		super(resolutionX, resolutionY, screen);
 	}
-	
-	public void pauseReset()
-	{
+
+	public void pauseReset() {
 		int left = getResolutionX() / 4;
 		int right = 3 * getResolutionX() / 4;
 		int up = 3 * getResolutionY() / 4;
 		int down = getResolutionY() / 4;
-		for (int i = left; i <= right; i++) {
-			for (int ii = down; ii < up; ii++) {
+		drawColoredString("\u255A", Color.GREEN, Color.BLACK, null, left, up);
+		drawColoredString("\u255D", Color.GREEN, Color.BLACK, null, right, up);
+		drawColoredString("\u2554", Color.GREEN, Color.BLACK, null, left, down);
+		drawColoredString("\u2557", Color.GREEN, Color.BLACK, null, right, down);
+
+		for (int i = left + 1; i <= right - 1; i++) {
+			for (int ii = down + 1; ii < up; ii++) {
 				drawText(" ", i, ii);
-				drawColoredString(" ", Color.GREEN, Color.GREEN, null, left, ii);
-				drawColoredString(" ", Color.GREEN, Color.GREEN, null, right, ii);
+				drawColoredString("\u2551", Color.GREEN, Color.BLACK, null, left, ii);
+				drawColoredString("\u2551", Color.GREEN, Color.BLACK, null, right, ii);
 			}
-			drawColoredString(" ", Color.GREEN, Color.GREEN, null, i, up);
-			drawColoredString(" ", Color.GREEN, Color.GREEN, null, i, down);
+			drawColoredString("\u2550", Color.GREEN, Color.BLACK, null, i, up);
+			drawColoredString("\u2550", Color.GREEN, Color.BLACK, null, i, down);
 		}
 	}
 
 	public int interaction(String[] interactables, String heading, int x, int y, boolean clear) {
 		int pos = 1;
-		if (clear)
-		{
+		if (clear) {
 			System.out.println("Clearing");
 			getScreen().clear();
-		} 
-		else
-		{
+		} else {
 			pauseReset();
 		}
 		drawColoredString(heading, Color.BLUE, Color.BLACK, ScreenCharacterStyle.Underline, x, y - 2);
@@ -73,8 +74,7 @@ public abstract class Menu extends Window {
 				case Enter:
 					return pos;
 				case Escape:
-					if(this instanceof PauseMenu)
-					{
+					if (this instanceof PauseMenu) {
 						return -1;
 					}
 				default:
