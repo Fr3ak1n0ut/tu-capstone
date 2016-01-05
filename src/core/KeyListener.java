@@ -8,24 +8,27 @@ import com.googlecode.lanterna.input.Key;
 import com.googlecode.lanterna.input.Key.Kind;
 import com.googlecode.lanterna.screen.Screen;
 
-public class KeyListener
-{
+public class KeyListener {
 	private Screen screen;
 
-	public KeyListener(Screen screen)
-	{
+	public KeyListener(Screen screen) {
 		this.screen = screen;
 	}
 
-	public Kind getKey()
-	{
+	/**
+	 * Captures a key input and returns it
+	 * 
+	 * @return the kind of the key that has been put in
+	 */
+	public Kind getKey() {
 		Key key = null;
-		while (key == null)
-		{
-			key = screen.readInput();
-		}
+		key = screen.readInput();
+		screen.getTerminal().setCursorVisible(false);
 		Kind keyKind = null;
-		keyKind = key.getKind();
+		if (key != null) {
+			keyKind = key.getKind();
+
+		}
 		return keyKind;
 	}
 }

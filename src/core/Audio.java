@@ -5,7 +5,11 @@ import java.io.File;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-
+/**
+ * 
+ * @author Felix Wohnhaas
+ * Implements the audio to the game
+ */
 public class Audio
 {
 	Clip clip = null;

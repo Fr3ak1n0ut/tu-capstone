@@ -1,9 +1,5 @@
 package core;
 
-/**
- *
- * @author Felix Wohnhaas
- */
 import java.io.*;
 import java.util.*;
 

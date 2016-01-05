@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Random;
 import com.googlecode.lanterna.input.Key.Kind;
 import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.ScreenCharacterStyle;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.Terminal.Color;
 import menus.PauseMenu;
@@ -11,7 +12,7 @@ import symbols.*;
 
 /**
  * @author Felix Wohnhaas
- *
+ * This class implements the core functionality of the game
  */
 public class Core extends Window {
 
@@ -23,7 +24,7 @@ public class Core extends Window {
 	final char idKey = '5';
 	final char empty = '6';
 	final char idPlayer = '7';
-	final char idCollectable = '8';
+	final char idCollectible = '8';
 	final int realWidth = getResolutionX();
 	final int realHeight = getResolutionY() - 3;
 	public static DynamicEnemy[] dynamicEnemies;
@@ -32,12 +33,23 @@ public class Core extends Window {
 	KeyListener listener = new KeyListener(getScreen());
 	public static Coordinates region;
 
+	/**
+	 * Constructor of the core
+	 * @param screen the screen to use
+	 * @param resolutionX the resolution in x direction to use
+	 * @param resolutionY the resolution in y direction to use
+	 * @param filename the filename to determine the level
+	 */
 	public Core(Screen screen, int resolutionX, int resolutionY, String filename) {
 		super(resolutionX, resolutionY, screen);
 		Game.io.loadProperties(filename);
 		Game.io.createLevelData();
 	}
 
+	/**
+	 * Sets region and draws level.
+	 * Starts the core of the game by calling the update() Method.
+	 */
 	public void start() {
 		getScreen().clear();
 		if (region == null) {
@@ -45,19 +57,14 @@ public class Core extends Window {
 			region = region(Game.io.getLvl());
 		}
 		drawLevel();
-		getScreen().refresh();
-//		Runnable enemyThread = new Movement(getScreen(), getResolutionX(), getResolutionY(), this);
-//		Thread t = new Thread(enemyThread);
-//		t.start();
 		update();
 	}
 
 	/**
-	 * Für diese Methode muss überprüft werden, ob es auch für ungleiche
-	 * Level-Größen funktioniert
+	 * This method checks the level for entries to the Labyrith to find the right region to draw when a new game starts.
 	 * 
-	 * @param lvl
-	 * @return
+	 * @param lvl the level to check for the right region
+	 * @return the found region as a Coordinates Object
 	 */
 	public Coordinates region(char[][] lvl) {
 		int width = Game.io.getWidth();
@@ -88,6 +95,9 @@ public class Core extends Window {
 		return new Coordinates(0, 0);
 	}
 
+	/**
+	 * Iterates through all dynamic enemies
+	 */
 	public void dynamicEnemy() {
 		for (int i = 0; i < dynamicEnemies.length; i++) {
 			if (dynamicEnemies[i] != null) {
@@ -101,6 +111,13 @@ public class Core extends Window {
 		getScreen().getTerminal().setCursorVisible(false);
 	}
 
+	/**
+	 * Moves the dynamic enemies
+	 * 
+	 * @param enemy
+	 *            the enemy to move
+	 * @return the new, moved enemy
+	 */
 	public DynamicEnemy moveEnemy(DynamicEnemy enemy) {
 		Random rand = new Random();
 		int direction = rand.nextInt(4);
@@ -138,12 +155,14 @@ public class Core extends Window {
 		return enemy;
 	}
 
+	/**
+	 * Draws the border to separate the GUI from the game
+	 */
 	public void drawBorder() {
 		for (int x = 0; x < realWidth; x++) {
 			drawColoredString("\u2550", Color.GREEN, Color.BLACK, null, x, realHeight);
 			drawColoredString(" ", Color.BLACK, Color.BLACK, null, x, realHeight + 1);
 		}
-		System.out.println("Lives: " + Game.player.getLives());
 		for (int i = 0; i < Game.player.getLives(); i++) {
 			drawColoredString("\u2665", Color.RED, Color.BLACK, null, 2 * i + 3, realHeight + 1);
 		}
@@ -153,6 +172,9 @@ public class Core extends Window {
 		getScreen().refresh();
 	}
 
+	/**
+	 * Draws a specific region of the level
+	 */
 	public void drawLevel() {
 		enemies = 0;
 		dynamicEnemies = new DynamicEnemy[50];
@@ -194,8 +216,8 @@ public class Core extends Window {
 					case empty:
 						drawSymbol(new Path(x, y));
 						break;
-					case idCollectable:
-						drawSymbol(new Collectable(x, y));
+					case idCollectible:
+						drawSymbol(new Collectible(x, y));
 						break;
 					default:
 						drawSymbol(new Path(x, y));
@@ -213,6 +235,13 @@ public class Core extends Window {
 		getScreen().getTerminal().setCursorVisible(false);
 	}
 
+	/**
+	 * Draws a character at a specific position
+	 * 
+	 * @param symbol
+	 *            the object that specifies the position and the character to
+	 *            draw
+	 */
 	public void drawSymbol(Symbol symbol) {
 		char character = symbol.getSymbol();
 		Terminal.Color background = symbol.getBackgroundColor();
@@ -221,12 +250,20 @@ public class Core extends Window {
 				symbol.getPosition().getY());
 	}
 
+	/**
+	 * Updates the game cycle and calls all relevant methods
+	 */
 	public void update() {
 		drawBorder();
 		boolean game = true;
+		long time = System.currentTimeMillis();
 		while (game) {
 			getScreen().getTerminal().setCursorVisible(false);
-			 dynamicEnemy();
+			long newTime = System.currentTimeMillis();
+			if (newTime - time > 1000) {
+				dynamicEnemy();
+				time = System.currentTimeMillis();
+			}
 			game = move();
 			game = check();
 			drawBorder();
@@ -235,7 +272,13 @@ public class Core extends Window {
 		System.exit(0);
 	}
 
-	private void setPos(int x, int y) throws InterruptedException, IOException {
+	/**
+	 * Sets the position of the player after checking for possible obstacles
+	 * 
+	 * @param x the amount of units to move in x direction
+	 * @param y the amount of units to move in y direction
+	 */
+	private void setPos(int x, int y) {
 		int playerX = Game.player.getPosition().getX();
 		int playerY = Game.player.getPosition().getY();
 		System.out.println("Region: " + region.toString());
@@ -318,7 +361,6 @@ public class Core extends Window {
 
 			Game.player.getPosition().setX(playerX + x);
 			Game.player.getPosition().setY(playerY + y);
-			// terminal.applyBackgroundColor(Terminal.Color.BLACK);
 			terminal.applyForegroundColor(Terminal.Color.WHITE);
 			terminal.moveCursor(playerX + x, playerY + y);
 			if (x == -1 && y == 0) {
@@ -342,6 +384,14 @@ public class Core extends Window {
 		System.out.println("Player pos: " + playerX + "," + playerY);
 	}
 
+	/**
+	 * Checks for possible events in the game
+	 * - Player walks into trap
+	 * - Player collects key
+	 * - Player finds exit
+	 * - Player finds collectible
+	 * @return true if game goes on, false if current game state prevents game from going on
+	 */
 	public boolean check() {
 		int playerX = Game.player.getPosition().getX();
 		int playerY = Game.player.getPosition().getY();
@@ -350,7 +400,7 @@ public class Core extends Window {
 		case idStaticTrap:
 			Game.io.getLvl()[playerX + region.getX() * realWidth][playerY + region.getY() * realHeight] = empty;
 			Game.player.died();
-			System.out.println(Game.player.getLives());
+			System.out.println("Lives: " + Game.player.getLives());
 			if (Game.player.getLives() <= 0) {
 				return false;
 			}
@@ -366,7 +416,7 @@ public class Core extends Window {
 			}
 			Game.io.getLvl()[playerX + region.getX() * realWidth][playerY + region.getY() * realHeight] = empty;
 			Game.player.died();
-			System.out.println(Game.player.getLives());
+			System.out.println("Lives: " + Game.player.getLives());
 			if (Game.player.getLives() <= 0) {
 				return false;
 			}
@@ -378,9 +428,17 @@ public class Core extends Window {
 			break;
 		case idOut:
 			Game.io.getLvl()[playerX + region.getX() * realWidth][playerY + region.getY() * realHeight] = empty;
-			System.out.println("WON");
+			getScreen().clear();
+			drawColoredString("You won!", Color.GREEN, Color.BLACK, ScreenCharacterStyle.Bold, realWidth / 2 - 4,
+					realHeight / 2);
+			getScreen().refresh();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException ex) {
+
+			}
 			return false;
-		case idCollectable:
+		case idCollectible:
 			Game.io.getLvl()[playerX + region.getX() * realWidth][playerY + region.getY() * realHeight] = empty;
 			Game.player.addScore();
 		default:
@@ -389,43 +447,35 @@ public class Core extends Window {
 		return true;
 	}
 
+	/**
+	 * Determines the direction to move and starts the Pause Menu if necessary
+	 * @return true if a movement is encountered, false if the Pause Menu is started.
+	 */
 	public boolean move() {
 		Kind kind = listener.getKey();
-
-		try {
-			if (kind != null) {
-				switch (kind) {
-				case ArrowDown:
-					setPos(0, 1);
-					break;
-				case ArrowUp:
-					setPos(0, -1);
-					break;
-				case ArrowLeft:
-					setPos(-1, 0);
-					break;
-				case ArrowRight:
-					setPos(1, 0);
-					break;
-				case Escape:
-					PauseMenu pause = new PauseMenu(getResolutionX(), getResolutionY(), getScreen(), this);
-					pause.interact(null);
-					return false;
-				default:
-					setPos(0, 0);
-					break;
-				}
+		if (kind != null) {
+			switch (kind) {
+			case ArrowDown:
+				setPos(0, 1);
+				break;
+			case ArrowUp:
+				setPos(0, -1);
+				break;
+			case ArrowLeft:
+				setPos(-1, 0);
+				break;
+			case ArrowRight:
+				setPos(1, 0);
+				break;
+			case Escape:
+				PauseMenu pause = new PauseMenu(getResolutionX(), getResolutionY(), getScreen(), this);
+				pause.interact(null);
+				return false;
+			default:
+				setPos(0, 0);
+				break;
 			}
-		} catch (InterruptedException e) {
-			System.out.println("Interrupted");
-		} catch (IOException e1) {
-			System.err.println("IOException");
 		}
 		return true;
 	}
-
-	public void end() {
-
-	}
-
 }

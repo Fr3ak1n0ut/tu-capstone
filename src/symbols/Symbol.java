@@ -15,6 +15,15 @@ public class Symbol {
     private final Terminal.Color foregroundColor;
     private final char symbol;
     
+    /**
+     * Constructor with Background color
+     * @param x the x position of the symbol
+     * @param y the y position of the symbol
+     * @param value the value of the symbol in the properties file
+     * @param backgroundColor the background color of the symbol
+     * @param foregroundColor the foreground color of the symbol
+     * @param symbol the char the symbol represents
+     */
     public Symbol(int x, int y, int value, Terminal.Color backgroundColor, Terminal.Color foregroundColor, char symbol)
     {
         this.backgroundColor = backgroundColor;
@@ -22,6 +31,15 @@ public class Symbol {
         this.symbol = symbol;
         position = new Coordinates(x, y);
     }
+    
+    /**
+     * Constructor without Background color, uses black as default
+     * @param x the x position of the symbol
+     * @param y the y position of the symbol
+     * @param value the value of the symbol in the properties file
+     * @param foregroundColor the foreground color of the symbol
+     * @param symbol the char the symbol represents
+     */
     public Symbol(int x, int y, int value, Terminal.Color foregroundColor, char symbol)
     {
         this.foregroundColor = foregroundColor;

@@ -1,5 +1,9 @@
 package core;
-
+/**
+ * 
+ * @author Felix Wohnhaas
+ * A simple helper class for 2-dimensional Coordinates
+ */
 public class Coordinates
 {
 	private int x;

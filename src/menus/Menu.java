@@ -8,14 +8,32 @@ import com.googlecode.lanterna.terminal.Terminal.Color;
 import core.KeyListener;
 import core.Window;
 
+/**
+ * 
+ * @author Felix Wohnhaas This class is the base of all Menus
+ */
 public abstract class Menu extends Window {
 
 	public KeyListener listener;
 
+	/**
+	 * The constructor of a Menu
+	 * 
+	 * @param resolutionX
+	 *            the resolution of the screen in x direction
+	 * @param resolutionY
+	 *            the resolution of the screen in y direction
+	 * @param screen
+	 *            the screen to use
+	 */
 	public Menu(int resolutionX, int resolutionY, Screen screen) {
 		super(resolutionX, resolutionY, screen);
 	}
 
+	/**
+	 * Clears the inner area of the screen for the pause menu and leave the
+	 * outer area to have the game shine through in the background
+	 */
 	public void pauseReset() {
 		int left = getResolutionX() / 4;
 		int right = 3 * getResolutionX() / 4;
@@ -37,6 +55,22 @@ public abstract class Menu extends Window {
 		}
 	}
 
+	/**
+	 * Represents all basic interaction with the menu
+	 * 
+	 * @param interactables
+	 *            all the possible interactions with its name, as strings
+	 * @param heading
+	 *            the heading of the corresponding menu
+	 * @param x
+	 *            the initial x position
+	 * @param y
+	 *            the initial y position
+	 * @param clear
+	 *            clears the screen if true and doesn´t clear the screen if
+	 *            false
+	 * @return the selected interactable as integer
+	 */
 	public int interaction(String[] interactables, String heading, int x, int y, boolean clear) {
 		int pos = 1;
 		if (clear) {
@@ -76,6 +110,8 @@ public abstract class Menu extends Window {
 				case Escape:
 					if (this instanceof PauseMenu) {
 						return -1;
+					} else {
+						return -2;
 					}
 				default:
 					break;
@@ -85,6 +121,18 @@ public abstract class Menu extends Window {
 		}
 	}
 
+	/**
+	 * Specifies the advanced yes/no selection after a main component has been
+	 * selected by the interaction() Method
+	 * 
+	 * @param posX
+	 *            the x position to draw the selection
+	 * @param posY
+	 *            the y position to draw the selection
+	 * @param message
+	 *            the message to display
+	 * @return true if yes is selected, no in any other case
+	 */
 	public boolean selectAnswer(int posX, int posY, String message) {
 		drawText(message, posX, posY);
 		getScreen().setCursorPosition(posX - 2, posY + 2);
@@ -122,6 +170,14 @@ public abstract class Menu extends Window {
 		}
 	}
 
+	/**
+	 * Resets the cursor to a new position with the given offset
+	 * 
+	 * @param offsetX
+	 *            the offset in x direction
+	 * @param offsetY
+	 *            the offset in y direction
+	 */
 	public void resetCursor(int offsetX, int offsetY) {
 		drawColoredString(" ", Color.BLACK, Color.BLACK, null, getScreen().getCursorPosition().getColumn(),
 				getScreen().getCursorPosition().getRow());
@@ -132,14 +188,30 @@ public abstract class Menu extends Window {
 		getScreen().refresh();
 	}
 
+	/**
+	 * Defines the method for all subclasses of this class to use when using
+	 * interaction
+	 * 
+	 * @param menu
+	 */
 	public abstract void interact(Menu menu);
 
-	public void drawText(String txt, int column, int row) {
-		if (getScreen().getCursorPosition().getRow() == row
-				&& getScreen().getCursorPosition().getColumn() == column - 2) {
-			drawColoredString(txt, Color.GREEN, Color.BLACK, ScreenCharacterStyle.Underline, column, row);
+	/**
+	 * Draws text to the specified position and underlines it if the cursor has
+	 * the same height
+	 * 
+	 * @param txt
+	 *            the text to draw
+	 * @param x
+	 *            the position in x direction
+	 * @param y
+	 *            the position in y direction
+	 */
+	public void drawText(String txt, int x, int y) {
+		if (getScreen().getCursorPosition().getRow() == y && getScreen().getCursorPosition().getColumn() == x - 2) {
+			drawColoredString(txt, Color.GREEN, Color.BLACK, ScreenCharacterStyle.Underline, x, y);
 		} else {
-			drawColoredString(txt, Color.WHITE, Color.BLACK, null, column, row);
+			drawColoredString(txt, Color.WHITE, Color.BLACK, null, x, y);
 		}
 	}
 

@@ -32,6 +32,13 @@ public class IOProperties {
 		return width;
 	}
 
+	/**
+	 * Saves the level to a properties file
+	 * 
+	 * @param filename
+	 *            the filename of the save
+	 * @return true if the save was successful, false if not
+	 */
 	public boolean saveLevel(String filename) {
 		Properties saveProp = new Properties();
 		for (int i = 0; i < width; i++) {
@@ -61,6 +68,11 @@ public class IOProperties {
 		return true;
 	}
 
+	/**
+	 * Creates the level data out of the loaded properties file
+	 * 
+	 * @return true if the creation was successful
+	 */
 	public boolean createLevelData() {
 		lvl = new char[width][height];
 		Enumeration<?> keyEnum = props.propertyNames();
@@ -71,8 +83,7 @@ public class IOProperties {
 				String[] keyCoordinates = key.split(",");
 				int x = Integer.parseInt(keyCoordinates[0]);
 				int y = Integer.parseInt(keyCoordinates[1]);
-				if(val.charAt(0) != '0')
-				{
+				if (val.charAt(0) != '0') {
 					System.out.println(val);
 				}
 				lvl[x][y] = val.charAt(0);
@@ -81,6 +92,13 @@ public class IOProperties {
 		return true;
 	}
 
+	/**
+	 * Loads the properties into the program
+	 * 
+	 * @param filename
+	 *            the filename of the properties to load in
+	 * @return true if the loading was successful, false if not
+	 */
 	public boolean loadProperties(String filename) {
 		props = new Properties();
 		try {
@@ -91,7 +109,8 @@ public class IOProperties {
 			int posX = Integer.parseInt(props.getProperty("posX"));
 			int posY = Integer.parseInt(props.getProperty("posY"));
 			Game.player = new Player(posX, posY);
-			Core.region = new Coordinates(Integer.parseInt(props.getProperty("regionX")), Integer.parseInt(props.getProperty("regionY")));
+			Core.region = new Coordinates(Integer.parseInt(props.getProperty("regionX")),
+					Integer.parseInt(props.getProperty("regionY")));
 			Game.player.setLives(Integer.parseInt(props.getProperty("lives")));
 			Game.player.setScore(Integer.parseInt(props.getProperty("score")));
 			Game.player.setHasKey(Boolean.parseBoolean(props.getProperty("hasKey")));

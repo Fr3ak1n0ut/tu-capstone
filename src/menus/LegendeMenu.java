@@ -17,7 +17,11 @@ import symbols.Exit;
 import symbols.Keys;
 import symbols.Player;
 import symbols.StaticEnemy;
-
+/**
+ * 
+ * @author Felix Wohnhaas
+ * This Menu is special because it requires almost no interaction
+ */
 public class LegendeMenu extends Menu {
 
 	public LegendeMenu(int resolutionX, int resolutionY, Screen screen) {
@@ -26,6 +30,10 @@ public class LegendeMenu extends Menu {
 		// do stuff
 	}
 
+	/**
+	 * Draws all important icons and descriptions
+	 * @param clear clears the screen if true, doesn´t clear it if false
+	 */
 	void drawMenu(boolean clear) {
 		if (clear) {
 			getScreen().clear();
@@ -60,7 +68,7 @@ public class LegendeMenu extends Menu {
 		drawMenu(!(caller instanceof PauseMenu));
 		while (true) {
 			Kind keyKind = listener.getKey();
-			if (keyKind == Key.Kind.Enter) {
+			if (keyKind == Key.Kind.Enter || keyKind == Key.Kind.Escape) {
 				caller.interact(this);
 				return;
 			}
