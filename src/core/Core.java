@@ -11,8 +11,8 @@ import menus.PauseMenu;
 import symbols.*;
 
 /**
- * @author Felix Wohnhaas
- * This class implements the core functionality of the game
+ * @author Felix Wohnhaas This class implements the core functionality of the
+ *         game
  */
 public class Core extends Window {
 
@@ -35,10 +35,15 @@ public class Core extends Window {
 
 	/**
 	 * Constructor of the core
-	 * @param screen the screen to use
-	 * @param resolutionX the resolution in x direction to use
-	 * @param resolutionY the resolution in y direction to use
-	 * @param filename the filename to determine the level
+	 * 
+	 * @param screen
+	 *            the screen to use
+	 * @param resolutionX
+	 *            the resolution in x direction to use
+	 * @param resolutionY
+	 *            the resolution in y direction to use
+	 * @param filename
+	 *            the filename to determine the level
 	 */
 	public Core(Screen screen, int resolutionX, int resolutionY, String filename) {
 		super(resolutionX, resolutionY, screen);
@@ -47,8 +52,8 @@ public class Core extends Window {
 	}
 
 	/**
-	 * Sets region and draws level.
-	 * Starts the core of the game by calling the update() Method.
+	 * Sets region and draws level. Starts the core of the game by calling the
+	 * update() Method.
 	 */
 	public void start() {
 		getScreen().clear();
@@ -61,9 +66,11 @@ public class Core extends Window {
 	}
 
 	/**
-	 * This method checks the level for entries to the Labyrith to find the right region to draw when a new game starts.
+	 * This method checks the level for entries to the Labyrith to find the
+	 * right region to draw when a new game starts.
 	 * 
-	 * @param lvl the level to check for the right region
+	 * @param lvl
+	 *            the level to check for the right region
 	 * @return the found region as a Coordinates Object
 	 */
 	public Coordinates region(char[][] lvl) {
@@ -275,8 +282,10 @@ public class Core extends Window {
 	/**
 	 * Sets the position of the player after checking for possible obstacles
 	 * 
-	 * @param x the amount of units to move in x direction
-	 * @param y the amount of units to move in y direction
+	 * @param x
+	 *            the amount of units to move in x direction
+	 * @param y
+	 *            the amount of units to move in y direction
 	 */
 	private void setPos(int x, int y) {
 		int playerX = Game.player.getPosition().getX();
@@ -385,12 +394,11 @@ public class Core extends Window {
 	}
 
 	/**
-	 * Checks for possible events in the game
-	 * - Player walks into trap
-	 * - Player collects key
-	 * - Player finds exit
-	 * - Player finds collectible
-	 * @return true if game goes on, false if current game state prevents game from going on
+	 * Checks for possible events in the game - Player walks into trap - Player
+	 * collects key - Player finds exit - Player finds collectible
+	 * 
+	 * @return true if game goes on, false if current game state prevents game
+	 *         from going on
 	 */
 	public boolean check() {
 		int playerX = Game.player.getPosition().getX();
@@ -449,10 +457,12 @@ public class Core extends Window {
 
 	/**
 	 * Determines the direction to move and starts the Pause Menu if necessary
-	 * @return true if a movement is encountered, false if the Pause Menu is started.
+	 * 
+	 * @return true if a movement is encountered, false if the Pause Menu is
+	 *         started.
 	 */
 	public boolean move() {
-		Kind kind = listener.getKey();
+		Kind kind = listener.getKey(false);
 		if (kind != null) {
 			switch (kind) {
 			case ArrowDown:

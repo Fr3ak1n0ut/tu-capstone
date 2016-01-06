@@ -7,7 +7,7 @@ import com.googlecode.lanterna.terminal.Terminal;
  */
 public class Wall extends Symbol {
     
-    public static Terminal.Color foregroundColor = Terminal.Color.BLUE;
+    public static Terminal.Color foregroundColor = Terminal.Color.CYAN;
     private static final Terminal.Color backgroundColor = Terminal.Color.WHITE;
     public static final char symbol = '\u0020';
     private static final int value = 0;

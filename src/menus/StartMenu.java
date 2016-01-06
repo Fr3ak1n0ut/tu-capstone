@@ -21,11 +21,11 @@ public class StartMenu extends Menu {
 		String[] interactables = { "Neues Spiel starten", "Spiel laden", "Legende", "Optionen", "Spiel beenden" };
 		int x = getResolutionX() / 2 - 10;
 		int y = getResolutionY() / 2 - 5;
-		System.out.println(x+","+y);
+		System.out.println(x + "," + y);
 		int interactionResult = interaction(interactables, "Start Menu", x, y, true);
 		switch (interactionResult) {
 		case 1:
-			Core core = new Core(getScreen(), getResolutionX(), getResolutionY(), "level_big_dense.properties");
+			Core core = new Core(getScreen(), getResolutionX(), getResolutionY(), "level.properties");
 			core.start();
 			return;
 		case 2:
@@ -41,7 +41,7 @@ public class StartMenu extends Menu {
 			options.interact(this);
 			return;
 		case 5:
-			boolean save = selectAnswer(x+20, y+8, "Wirklich beenden?");
+			boolean save = selectAnswer(x + 20, y + 8, "Wirklich beenden?");
 			System.out.println(save);
 			if (save) {
 				System.exit(0);

@@ -10,6 +10,11 @@ import com.googlecode.lanterna.terminal.Terminal;
 import menus.StartMenu;
 import symbols.Player;
 
+/**
+ * 
+ * @author Felix Wohnhaas This class starts the game and initializes all
+ *         components
+ */
 public class Game {
 	public static Player player = null;
 	public static IOProperties io;

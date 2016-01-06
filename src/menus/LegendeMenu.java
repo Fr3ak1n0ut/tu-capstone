@@ -17,22 +17,24 @@ import symbols.Exit;
 import symbols.Keys;
 import symbols.Player;
 import symbols.StaticEnemy;
+
 /**
  * 
- * @author Felix Wohnhaas
- * This Menu is special because it requires almost no interaction
+ * @author Felix Wohnhaas This Menu is special because it requires almost no
+ *         interaction
  */
 public class LegendeMenu extends Menu {
 
 	public LegendeMenu(int resolutionX, int resolutionY, Screen screen) {
 		super(resolutionX, resolutionY, screen);
 		listener = new KeyListener(screen);
-		// do stuff
 	}
 
 	/**
 	 * Draws all important icons and descriptions
-	 * @param clear clears the screen if true, doesn´t clear it if false
+	 * 
+	 * @param clear
+	 *            clears the screen if true, doesn´t clear it if false
 	 */
 	void drawMenu(boolean clear) {
 		if (clear) {
@@ -67,7 +69,7 @@ public class LegendeMenu extends Menu {
 	public void interact(Menu caller) {
 		drawMenu(!(caller instanceof PauseMenu));
 		while (true) {
-			Kind keyKind = listener.getKey();
+			Kind keyKind = listener.getKey(true);
 			if (keyKind == Key.Kind.Enter || keyKind == Key.Kind.Escape) {
 				caller.interact(this);
 				return;

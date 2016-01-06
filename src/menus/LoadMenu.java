@@ -23,11 +23,7 @@ public class LoadMenu extends Menu {
 		int x = getResolutionX() / 2 - 10;
 		int y = getResolutionY() / 2 - 5;
 		int interactionResult = interaction(interactables, "Load Menu", x, y, !(caller instanceof PauseMenu));
-		if (interactionResult == -2) {
-			caller.interact(this);
-			return;
-		}
-		if (interactionResult == interactables.length) {
+		if (interactionResult == interactables.length || interactionResult == -2) {
 			caller.interact(this);
 			return;
 		} else {
@@ -37,7 +33,7 @@ public class LoadMenu extends Menu {
 				Core core = new Core(getScreen(), getResolutionX(), getResolutionY(), filename);
 				core.start();
 			} else {
-				drawText("Slot does not exist.", 20, getScreen().getCursorPosition().getRow());
+				drawText("Slot does not exist.", x+10, getScreen().getCursorPosition().getRow());
 				System.out.println("Slot doesnt exist.");
 				getScreen().refresh();
 				try {

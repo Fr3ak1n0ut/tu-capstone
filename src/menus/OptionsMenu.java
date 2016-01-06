@@ -57,7 +57,8 @@ public class OptionsMenu extends Menu {
 		getScreen().refresh();
 		while (true) {
 			drawColoredString(Player.symbol + "", colors[position], Color.BLACK, null, x + 2, y);
-			Kind kind = listener.getKey();
+			getScreen().refresh();
+			Kind kind = listener.getKey(true);
 			if (kind == Kind.ArrowLeft) {
 				position--;
 				if (position == -1) {

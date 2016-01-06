@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.Random;
+
 import symbols.Player;
 
 /**
@@ -83,10 +85,8 @@ public class IOProperties {
 				String[] keyCoordinates = key.split(",");
 				int x = Integer.parseInt(keyCoordinates[0]);
 				int y = Integer.parseInt(keyCoordinates[1]);
-				if (val.charAt(0) != '0') {
-					System.out.println(val);
-				}
-				lvl[x][y] = val.charAt(0);
+				char c = val.charAt(0);
+				lvl[x][y] = c;
 			}
 		}
 		return true;
@@ -106,22 +106,23 @@ public class IOProperties {
 			props.load(in);
 			width = Integer.parseInt(props.getProperty("Width"));
 			height = Integer.parseInt(props.getProperty("Height"));
-			int posX = Integer.parseInt(props.getProperty("posX"));
-			int posY = Integer.parseInt(props.getProperty("posY"));
-			Game.player = new Player(posX, posY);
-			Core.region = new Coordinates(Integer.parseInt(props.getProperty("regionX")),
-					Integer.parseInt(props.getProperty("regionY")));
-			Game.player.setLives(Integer.parseInt(props.getProperty("lives")));
-			Game.player.setScore(Integer.parseInt(props.getProperty("score")));
-			Game.player.setHasKey(Boolean.parseBoolean(props.getProperty("hasKey")));
-			// }
+			if (props.containsKey("posX")) {
+				int posX = Integer.parseInt(props.getProperty("posX"));
+				int posY = Integer.parseInt(props.getProperty("posY"));
+				Game.player = new Player(posX, posY);
+				Core.region = new Coordinates(Integer.parseInt(props.getProperty("regionX")),
+						Integer.parseInt(props.getProperty("regionY")));
+				Game.player.setLives(Integer.parseInt(props.getProperty("lives")));
+				Game.player.setScore(Integer.parseInt(props.getProperty("score")));
+				Game.player.setHasKey(Boolean.parseBoolean(props.getProperty("hasKey")));
+			}
 			in.close();
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			return false;
-		} catch (Exception ex) {
-			System.err.println(ex.getMessage());
-			return false;
+		} catch (NumberFormatException e) {
+			// Exception occurs when specific property is not found
+			System.err.println("Invalid number format");
 		}
 		return true;
 	}

@@ -20,14 +20,20 @@ public class KeyListener {
 	 * 
 	 * @return the kind of the key that has been put in
 	 */
-	public Kind getKey() {
+	public Kind getKey(boolean repeat) {
 		Key key = null;
-		key = screen.readInput();
-		screen.getTerminal().setCursorVisible(false);
+		long startTime = System.currentTimeMillis();
+		while (key == null) {
+			long currentTime = System.currentTimeMillis();
+			key = screen.readInput();
+			if(!repeat && currentTime-startTime > 1000)
+			{
+				break;
+			}
+		}
 		Kind keyKind = null;
 		if (key != null) {
 			keyKind = key.getKind();
-
 		}
 		return keyKind;
 	}

@@ -90,7 +90,7 @@ public abstract class Menu extends Window {
 			}
 			getScreen().refresh();
 			getScreen().getTerminal().setCursorVisible(false);
-			Kind keyKind = listener.getKey();
+			Kind keyKind = listener.getKey(true);
 			if (keyKind != null) {
 				switch (keyKind) {
 				case ArrowUp:
@@ -108,6 +108,9 @@ public abstract class Menu extends Window {
 				case Enter:
 					return pos;
 				case Escape:
+					if(this instanceof StartMenu) {
+						break;
+					}
 					if (this instanceof PauseMenu) {
 						return -1;
 					} else {
@@ -142,7 +145,7 @@ public abstract class Menu extends Window {
 			drawText("No", posX + 10, posY + 2);
 			getScreen().refresh();
 			getScreen().getTerminal().setCursorVisible(false);
-			Kind keyKind = listener.getKey();
+			Kind keyKind = listener.getKey(true);
 			if (keyKind != null) {
 				switch (keyKind) {
 				case ArrowLeft:
