@@ -74,7 +74,6 @@ public abstract class Menu extends Window {
 	public int interaction(String[] interactables, String heading, int x, int y, boolean clear) {
 		int pos = 1;
 		if (clear) {
-			System.out.println("Clearing");
 			getScreen().clear();
 		} else {
 			pauseReset();

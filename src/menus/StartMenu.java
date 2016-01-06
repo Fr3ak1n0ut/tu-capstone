@@ -21,7 +21,6 @@ public class StartMenu extends Menu {
 		String[] interactables = { "Neues Spiel starten", "Spiel laden", "Legende", "Optionen", "Spiel beenden" };
 		int x = getResolutionX() / 2 - 10;
 		int y = getResolutionY() / 2 - 5;
-		System.out.println(x + "," + y);
 		int interactionResult = interaction(interactables, "Start Menu", x, y, true);
 		switch (interactionResult) {
 		case 1:
