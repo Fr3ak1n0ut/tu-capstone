@@ -24,6 +24,7 @@ public class StartMenu extends Menu {
 		int interactionResult = interaction(interactables, "Start", x, y, true);
 		switch (interactionResult) {
 		case 1:
+			//Edit to try other levels
 			Core core = new Core(getScreen(), getResolutionX(), getResolutionY(), "level.properties");
 			core.start();
 			return;
