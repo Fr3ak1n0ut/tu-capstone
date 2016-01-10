@@ -24,7 +24,7 @@ public class SaveMenu extends Menu {
 		String[] interactables = { "Slot 1", "Slot 2", "Slot 3", "Slot 4", "Zurück" };
 		int x = getResolutionX() / 2 - 10;
 		int y = getResolutionY() / 2 - 5;
-		int interactionResult = interaction(interactables, "Save Menu", x, y, !(caller instanceof PauseMenu));
+		int interactionResult = interaction(interactables, "Speichern", x, y, !(caller instanceof PauseMenu));
 		if (interactionResult == interactables.length || interactionResult == -2) {
 			caller.interact(this);
 			return;

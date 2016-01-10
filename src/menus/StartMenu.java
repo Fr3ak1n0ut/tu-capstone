@@ -18,31 +18,35 @@ public class StartMenu extends Menu {
 
 	@Override
 	public void interact(Menu caller) {
-		String[] interactables = { "Neues Spiel starten", "Spiel laden", "Legende", "Optionen", "Spiel beenden" };
+		String[] interactables = { "Neues Spiel starten", "Level erstellen","Spiel laden", "Legende", "Optionen", "Spiel beenden" };
 		int x = getResolutionX() / 2 - 10;
 		int y = getResolutionY() / 2 - 5;
-		int interactionResult = interaction(interactables, "Start Menu", x, y, true);
+		int interactionResult = interaction(interactables, "Start", x, y, true);
 		switch (interactionResult) {
 		case 1:
 			Core core = new Core(getScreen(), getResolutionX(), getResolutionY(), "level.properties");
 			core.start();
 			return;
 		case 2:
+			CreateMenu creater = new CreateMenu(getResolutionX(), getResolutionY(), getScreen());
+			creater.interact(this);
+			return;
+		case 3:
 			LoadMenu loadMenu = new LoadMenu(getResolutionX(), getResolutionY(), getScreen());
 			loadMenu.interact(this);
 			return;
-		case 3:
+		case 4:
 			LegendeMenu legende = new LegendeMenu(getResolutionX(), getResolutionY(), getScreen());
 			legende.interact(this);
 			return;
-		case 4:
+		case 5:
 			OptionsMenu options = new OptionsMenu(getResolutionX(), getResolutionY(), getScreen());
 			options.interact(this);
 			return;
-		case 5:
-			boolean save = selectAnswer(x + 20, y + 8, "Wirklich beenden?");
-			System.out.println(save);
-			if (save) {
+		case 6:
+			boolean end = selectAnswer(x + 20, y + 8, "Wirklich beenden?");
+			System.out.println(end);
+			if (end) {
 				System.exit(0);
 			} else {
 				StartMenu startMenu = new StartMenu(getResolutionX(), getResolutionY(), getScreen());

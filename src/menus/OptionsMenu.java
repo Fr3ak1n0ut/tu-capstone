@@ -17,14 +17,13 @@ public class OptionsMenu extends Menu {
 
 	@Override
 	public void interact(Menu caller) {
-		String[] interactables = { "Music", "Wall Color", "Zurück" };
+		String[] interactables = { "Musik", "Wandfarbe", "Zurück" };
 		int x = getResolutionX() / 2 - 10;
 		int y = getResolutionY() / 2 - 5;
-		int interactionResult = interaction(interactables, "Options", x, y, !(caller instanceof PauseMenu));
+		int interactionResult = interaction(interactables, "Optionen", x, y, !(caller instanceof PauseMenu));
 		if (interactionResult == 1) {
-			boolean musicOn = selectAnswer(x + 15, y, "Do you want background music?");
+			boolean musicOn = selectAnswer(x + 15, y, "Hintergrundmusik aktivieren?");
 			if (musicOn) {
-				System.out.println("Turning music on");
 				Game.music.start();
 				this.interact(caller);
 
@@ -33,8 +32,6 @@ public class OptionsMenu extends Menu {
 				this.interact(caller);
 			}
 		} else if (interactionResult == 2) {
-			// color
-			System.out.println("Color");
 			Wall.foregroundColor = wallColor();
 			this.interact(caller);
 		} else {
@@ -64,12 +61,10 @@ public class OptionsMenu extends Menu {
 				if (position == -1) {
 					position += colors.length;
 				}
-				System.out.println(position);
 
 			} else if (kind == Kind.ArrowRight) {
 				position++;
 				position %= colors.length;
-				System.out.println(position);
 			} else if (kind == Kind.Enter) {
 				return colors[position];
 			}

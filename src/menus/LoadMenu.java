@@ -22,7 +22,7 @@ public class LoadMenu extends Menu {
 		String[] interactables = { "Slot 1", "Slot 2", "Slot 3", "Slot 4", "Zurück" };
 		int x = getResolutionX() / 2 - 10;
 		int y = getResolutionY() / 2 - 5;
-		int interactionResult = interaction(interactables, "Load Menu", x, y, !(caller instanceof PauseMenu));
+		int interactionResult = interaction(interactables, "Laden", x, y, !(caller instanceof PauseMenu));
 		if (interactionResult == interactables.length || interactionResult == -2) {
 			caller.interact(this);
 			return;
@@ -33,11 +33,10 @@ public class LoadMenu extends Menu {
 				Core core = new Core(getScreen(), getResolutionX(), getResolutionY(), filename);
 				core.start();
 			} else {
-				drawText("Slot does not exist.", x+10, getScreen().getCursorPosition().getRow());
-				System.out.println("Slot doesnt exist.");
+				drawText("Slot existiert nicht.", x+10, getScreen().getCursorPosition().getRow());
 				getScreen().refresh();
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(1500);
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}

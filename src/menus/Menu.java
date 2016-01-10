@@ -140,8 +140,8 @@ public abstract class Menu extends Window {
 		getScreen().setCursorPosition(posX - 2, posY + 2);
 		resetCursor(0, 0);
 		while (true) {
-			drawText("Yes", posX, posY + 2);
-			drawText("No", posX + 10, posY + 2);
+			drawText("Ja", posX, posY + 2);
+			drawText("Nein", posX + 10, posY + 2);
 			getScreen().refresh();
 			getScreen().getTerminal().setCursorVisible(false);
 			Kind keyKind = listener.getKey(true);
@@ -165,6 +165,8 @@ public abstract class Menu extends Window {
 					} else {
 						return false;
 					}
+				case Escape:
+					this.interact(null);
 				default:
 					break;
 				}

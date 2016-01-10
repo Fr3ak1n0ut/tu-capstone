@@ -1,8 +1,8 @@
 Width=250
 Height=250
-NrIn=4
-NrOut=10
-Keys=12
-StaticTraps=15
-DynamicTraps=13
+NrIn=3
+NrOut=5
+Keys=5
+StaticTraps=5
+DynamicTraps=5
 Density=3

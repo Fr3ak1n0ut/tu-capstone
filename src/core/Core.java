@@ -1,6 +1,5 @@
 package core;
 
-import java.io.IOException;
 import java.util.Random;
 import com.googlecode.lanterna.input.Key.Kind;
 import com.googlecode.lanterna.screen.Screen;
@@ -254,6 +253,7 @@ public class Core extends Window {
 		drawBorder();
 		boolean game = true;
 		long time = System.currentTimeMillis();
+		setPos(0, 0);
 		while (game) {
 			getScreen().getTerminal().setCursorVisible(false);
 			long newTime = System.currentTimeMillis();
@@ -368,11 +368,10 @@ public class Core extends Window {
 			} else if (x == 0 && y == 1) {
 				terminal.putCharacter('\u25BC');
 			} else {
-				terminal.putCharacter('~');
+				terminal.putCharacter(Game.player.getSymbol());
 			}
 		}
 		if (redraw)
-
 		{
 			getScreen().clear();
 			drawLevel();
@@ -441,6 +440,7 @@ public class Core extends Window {
 		case idCollectible:
 			Game.io.getLvl()[playerX + region.getX() * realWidth][playerY + region.getY() * realHeight] = empty;
 			Game.player.addScore();
+			break;
 		default:
 			break;
 		}
@@ -470,6 +470,7 @@ public class Core extends Window {
 				setPos(1, 0);
 				break;
 			case Escape:
+				getScreen().putString(Game.player.getPosition().getX(), Game.player.getPosition().getY(), " ", Color.BLACK, Color.BLACK, ScreenCharacterStyle.Bold);
 				PauseMenu pause = new PauseMenu(getResolutionX(), getResolutionY(), getScreen(), this);
 				pause.interact(null);
 				return false;
