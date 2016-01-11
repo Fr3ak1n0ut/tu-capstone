@@ -18,13 +18,14 @@ public class StartMenu extends Menu {
 
 	@Override
 	public void interact(Menu caller) {
-		String[] interactables = { "Neues Spiel starten", "Level erstellen","Spiel laden", "Legende", "Optionen", "Spiel beenden" };
+		String[] interactables = { "Neues Spiel starten", "Level erstellen", "Spiel laden", "Legende", "Optionen",
+				"Spiel beenden" };
 		int x = getResolutionX() / 2 - 10;
 		int y = getResolutionY() / 2 - 5;
 		int interactionResult = interaction(interactables, "Start", x, y, true);
 		switch (interactionResult) {
 		case 1:
-			//Edit to try other levels
+			// Edit to try other levels
 			Core core = new Core(getScreen(), getResolutionX(), getResolutionY(), "level.properties");
 			core.start();
 			return;
