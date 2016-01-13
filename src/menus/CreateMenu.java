@@ -11,6 +11,7 @@ import com.googlecode.lanterna.terminal.Terminal.Color;
 import core.Core;
 import core.Generate;
 import core.KeyListener;
+import core.TestThreading;
 
 public class CreateMenu extends Menu {
 	private int width = 250;
@@ -21,9 +22,10 @@ public class CreateMenu extends Menu {
 	private int staticEnemies = 5;
 	private int dynamicEnemies = 5;
 	private int density = 3;
-
-	public CreateMenu(int resX, int resY, Screen screen) {
+	private TestThreading thread;
+	public CreateMenu(int resX, int resY, Screen screen, TestThreading thread) {
 		super(resX, resY, screen);
+		this.thread=thread;
 		listener = new KeyListener(screen);
 	}
 
@@ -93,7 +95,7 @@ public class CreateMenu extends Menu {
 				e.printStackTrace();
 			}
 			if (load) {
-				Core core = new Core(getScreen(), getResolutionX(), getResolutionY(), "level.properties");
+				Core core = new Core(getScreen(), getResolutionX(), getResolutionY(), "level.properties", thread);
 				core.start();
 				return;
 			}
