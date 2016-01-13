@@ -10,11 +10,14 @@ import com.googlecode.lanterna.screen.Screen;
 
 import core.Core;
 import core.KeyListener;
+import core.TestThreading;
 
 public class LoadMenu extends Menu {
-	public LoadMenu(int resX, int resY, Screen screen) {
+	private TestThreading thread;
+	public LoadMenu(int resX, int resY, Screen screen,TestThreading thread) {
 		super(resX, resY, screen);
 		this.listener = new KeyListener(screen);
+		this.thread = thread;
 	}
 
 	@Override
@@ -30,7 +33,7 @@ public class LoadMenu extends Menu {
 			String filename = "save" + interactionResult + ".properties";
 			File f = new File(filename);
 			if (f.exists()) {
-				Core core = new Core(getScreen(), getResolutionX(), getResolutionY(), filename);
+				Core core = new Core(getScreen(), getResolutionX(), getResolutionY(), filename, thread);
 				core.start();
 			} else {
 				drawText("Slot existiert nicht.", x+10, getScreen().getCursorPosition().getRow());

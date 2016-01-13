@@ -3,6 +3,7 @@ package menus;
 import com.googlecode.lanterna.screen.Screen;
 import core.Core;
 import core.KeyListener;
+import core.TestThreading;
 
 /**
  * 
@@ -11,10 +12,12 @@ import core.KeyListener;
  */
 public class PauseMenu extends Menu {
 	Core core;
+	private TestThreading thread;
 
-	public PauseMenu(int resolutionX, int resolutionY, Screen screen, Core core) {
+	public PauseMenu(int resolutionX, int resolutionY, Screen screen, Core core, TestThreading thread) {
 		super(resolutionX, resolutionY, screen);
 		this.listener = new KeyListener(screen);
+		this.thread=thread;
 		this.core = core;
 	}
 
@@ -34,11 +37,11 @@ public class PauseMenu extends Menu {
 			core.start();
 			return;
 		case 2:
-			SaveMenu saveMenu = new SaveMenu(getResolutionX(), getResolutionY(), getScreen(), false);
+			SaveMenu saveMenu = new SaveMenu(getResolutionX(), getResolutionY(), getScreen(), false, thread, core);
 			saveMenu.interact(this);
 			return;
 		case 3:
-			LoadMenu loadMenu = new LoadMenu(getResolutionX(), getResolutionY(), getScreen());
+			LoadMenu loadMenu = new LoadMenu(getResolutionX(), getResolutionY(), getScreen(), thread);
 			loadMenu.interact(this);
 			return;
 		case 4:
@@ -52,7 +55,7 @@ public class PauseMenu extends Menu {
 		case 6:
 			boolean save = selectAnswer(x + 15, y + 10, "Speichern vor dem Beenden?");
 			if (save) {
-				saveMenu = new SaveMenu(getResolutionX(), getResolutionY(), getScreen(), true);
+				saveMenu = new SaveMenu(getResolutionX(), getResolutionY(), getScreen(), true, thread, core);
 				saveMenu.interact(this);
 				System.exit(0);
 			} else {

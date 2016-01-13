@@ -15,6 +15,10 @@ import symbols.Player;
  */
 public class IOProperties {
 	private Properties props;
+	private TestThreading thread;
+	public IOProperties(TestThreading thread) {
+		this.thread = thread;
+	}
 
 	private int width;
 	private int height;
@@ -40,7 +44,7 @@ public class IOProperties {
 	 *            the filename of the save
 	 * @return true if the save was successful, false if not
 	 */
-	public boolean saveLevel(String filename) {
+	public boolean saveLevel(String filename, Core core) {
 		Properties saveProp = new Properties();
 		for (int i = 0; i < width; i++) {
 			for (int ii = 0; ii < height; ii++) {
@@ -51,13 +55,13 @@ public class IOProperties {
 		}
 		saveProp.setProperty("Width", width + "");
 		saveProp.setProperty("Height", height + "");
-		saveProp.setProperty("posX", Game.player.getPosition().getX() + "");
-		saveProp.setProperty("posY", Game.player.getPosition().getY() + "");
-		saveProp.setProperty("hasKey", Game.player.hasKey() + "");
-		saveProp.setProperty("regionX", Core.region.getX() + "");
-		saveProp.setProperty("regionY", Core.region.getY() + "");
-		saveProp.setProperty("score", Game.player.getScore() + "");
-		saveProp.setProperty("lives", Game.player.getLives() + "");
+		saveProp.setProperty("posX", thread.player.getPosition().getX() + "");
+		saveProp.setProperty("posY", thread.player.getPosition().getY() + "");
+		saveProp.setProperty("hasKey", thread.player.hasKey() + "");
+		saveProp.setProperty("regionX", core.region.getX() + "");
+		saveProp.setProperty("regionY", core.region.getY() + "");
+		saveProp.setProperty("score", thread.player.getScore() + "");
+		saveProp.setProperty("lives", thread.player.getLives() + "");
 		try {
 			FileOutputStream out = new FileOutputStream(new File(filename));
 			saveProp.store(out, "savedLevel");
@@ -98,7 +102,7 @@ public class IOProperties {
 	 *            the filename of the properties to load in
 	 * @return true if the loading was successful, false if not
 	 */
-	public boolean loadProperties(String filename) {
+	public boolean loadProperties(String filename, Core core) {
 		props = new Properties();
 		try {
 			FileInputStream in = new FileInputStream(filename);
@@ -108,12 +112,12 @@ public class IOProperties {
 			if (props.containsKey("posX")) {
 				int posX = Integer.parseInt(props.getProperty("posX"));
 				int posY = Integer.parseInt(props.getProperty("posY"));
-				Game.player = new Player(posX, posY);
-				Core.region = new Coordinates(Integer.parseInt(props.getProperty("regionX")),
+				thread.player = new Player(posX, posY);
+				core.region = new Coordinates(Integer.parseInt(props.getProperty("regionX")),
 						Integer.parseInt(props.getProperty("regionY")));
-				Game.player.setLives(Integer.parseInt(props.getProperty("lives")));
-				Game.player.setScore(Integer.parseInt(props.getProperty("score")));
-				Game.player.setHasKey(Boolean.parseBoolean(props.getProperty("hasKey")));
+				thread.player.setLives(Integer.parseInt(props.getProperty("lives")));
+				thread.player.setScore(Integer.parseInt(props.getProperty("score")));
+				thread.player.setHasKey(Boolean.parseBoolean(props.getProperty("hasKey")));
 			}
 			in.close();
 		} catch (IOException ex) {

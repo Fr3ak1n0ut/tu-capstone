@@ -6,17 +6,22 @@ package menus;
 
 import com.googlecode.lanterna.screen.Screen;
 
+import core.Core;
 import core.Game;
 import core.KeyListener;
+import core.TestThreading;
 
 public class SaveMenu extends Menu {
 
 	boolean end;
-
-	public SaveMenu(int resX, int resY, Screen screen, boolean end) {
+	TestThreading thread;
+	private Core core;
+	public SaveMenu(int resX, int resY, Screen screen, boolean end, TestThreading thread, Core core) {
 		super(resX, resY, screen);
 		this.listener = new KeyListener(screen);
 		this.end = end;
+		this.thread = thread;
+		this.core = core;
 	}
 
 	@Override
@@ -29,7 +34,7 @@ public class SaveMenu extends Menu {
 			caller.interact(this);
 			return;
 		} else {
-			Game.io.saveLevel("save" + interactionResult + ".properties");
+			thread.io.saveLevel("save" + interactionResult + ".properties", core);
 			if (end) {
 				System.exit(0);
 			}
