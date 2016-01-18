@@ -11,6 +11,7 @@ import com.googlecode.lanterna.screen.ScreenCharacterStyle;
 import com.googlecode.lanterna.terminal.Terminal.Color;
 
 import core.KeyListener;
+import symbols.Collectible;
 import symbols.DynamicEnemy;
 import symbols.Entry;
 import symbols.Exit;
@@ -34,7 +35,7 @@ public class LegendeMenu extends Menu {
 	 * Draws all important icons and descriptions
 	 * 
 	 * @param clear
-	 *            clears the screen if true, doesn´t clear it if false
+	 *            clears the screen if true, doesnï¿½t clear it if false
 	 */
 	void drawMenu(boolean clear) {
 		if (clear) {
@@ -45,7 +46,7 @@ public class LegendeMenu extends Menu {
 		int x = getResolutionX() / 2 - 10;
 		int y = getResolutionY() / 2 - 7;
 		System.out.println(x + "," + y);
-		getScreen().setCursorPosition(x - 2, y + 14);
+		getScreen().setCursorPosition(x - 2, y + 16);
 		resetCursor(0, 0);
 		drawColoredString("Legende", Color.BLUE, Color.BLACK, ScreenCharacterStyle.Underline, x, y);
 		drawColoredString(Player.symbol + "", Color.WHITE, Color.BLACK, null, x, y + 2);
@@ -56,11 +57,13 @@ public class LegendeMenu extends Menu {
 		drawText("This is a lazy Enemy.", x + 2, y + 6);
 		drawColoredString(Keys.symbol + "", Color.CYAN, Color.BLACK, null, x, y + 8);
 		drawText("This is a key.", x + 2, y + 8);
-		drawColoredString(Entry.symbol + "", Color.GREEN, Color.BLACK, null, x, y + 10);
-		drawText("This is the entry.", x + 2, y + 10);
-		drawColoredString(Exit.symbol + "", Color.GREEN, Color.BLACK, null, x, y + 12);
-		drawText("This is the exit.", x + 2, y + 12);
-		drawText("Back to Menu", x, y + 14);
+		drawColoredString(Collectible.symbol + "", Color.YELLOW, Color.BLACK, null, x, y + 10);
+                drawText("This is a collectible.", x + 2, y + 10);
+		drawColoredString(Entry.symbol + "", Color.GREEN, Color.BLACK, null, x, y + 12);
+		drawText("This is the entry.", x + 2, y + 12);
+		drawColoredString(Exit.symbol + "", Color.BLUE, Color.BLACK, null, x, y + 14);
+		drawText("This is the exit.", x + 2, y + 14);
+		drawText("Back to Menu", x, y + 16);
 		getScreen().refresh();
 		getScreen().getTerminal().setCursorVisible(false);
 	}

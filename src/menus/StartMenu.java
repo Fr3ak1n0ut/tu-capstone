@@ -8,12 +8,8 @@ import com.googlecode.lanterna.screen.Screen;
 
 import core.Core;
 import core.KeyListener;
-import core.TestThreading;
 
 public class StartMenu extends Menu {
-
-	private boolean multiplayer = true;
-	private TestThreading thread;
 
 	public StartMenu(int resolutionX, int resolutionY, Screen screen) {
 		super(resolutionX, resolutionY, screen);
@@ -30,26 +26,15 @@ public class StartMenu extends Menu {
 		switch (interactionResult) {
 		case 1:
 			// Edit to try other levels
-			getScreen().clear();
-			if (multiplayer) {
-				TestThreading t1 = new TestThreading(getScreen(), getResolutionX(), getResolutionY(), 0,
-						getResolutionX() / 2-1, 0, getResolutionY()-3);
-				TestThreading t2 = new TestThreading(getScreen(), getResolutionX(), getResolutionY(),
-						getResolutionX() / 2+1, getResolutionX(), 0, getResolutionY()-3);
-				t1.start();
-				t2.start();
-			} else {
-				TestThreading t1 = new TestThreading(getScreen(), getResolutionX(), getResolutionY(), 0,
-						getResolutionX(), 0, getResolutionY()-3);
-				t1.start();
-			}
+			Core core = new Core(getScreen(), getResolutionX(), getResolutionY(), "level.properties");
+			core.start();
 			return;
 		case 2:
-			CreateMenu creater = new CreateMenu(getResolutionX(), getResolutionY(), getScreen(), thread);
+			CreateMenu creater = new CreateMenu(getResolutionX(), getResolutionY(), getScreen());
 			creater.interact(this);
 			return;
 		case 3:
-			LoadMenu loadMenu = new LoadMenu(getResolutionX(), getResolutionY(), getScreen(), thread);
+			LoadMenu loadMenu = new LoadMenu(getResolutionX(), getResolutionY(), getScreen());
 			loadMenu.interact(this);
 			return;
 		case 4:

@@ -16,6 +16,10 @@ Zusatzfunktionen:
 
 - Mehrere Speicher / Ladeslots
 
+- Collectibles
+
+- Score
+
 Orientierung im Projekt:
 
 - Die Grundfunktionen befinden sich im Package "Core". Dabei befindet sich die grundlegende Spielmechanik in der Klasse Core, die Klasse mit Main-Methode ist Game.
